@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, useLocation } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import ProtectedRoute from './components/ProtectedRoute'
 import Home from './pages/Home'
@@ -14,9 +14,12 @@ import ManageLocations from './pages/admin/ManageLocations'
 import ManageRoutes from './pages/admin/ManageRoutes'
 
 function App() {
+  const location = useLocation()
+  const isHome = location.pathname === '/'
+
   return (
     <>
-      <Navbar />
+      {!isHome && <Navbar />}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />

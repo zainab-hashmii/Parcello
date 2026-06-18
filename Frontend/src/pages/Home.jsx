@@ -1,85 +1,142 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import CourierIllustration from '../components/CourierIllustration'
+import { motion } from 'framer-motion'
+import { Menu, ArrowRightCircle, Truck } from 'lucide-react'
+import Logo from '../components/Logo'
+import MobileMenuSheet from '../components/MobileMenuSheet'
+import DeliveryRoadScene from '../components/DeliveryRoadScene'
 
-const FEATURES = [
-  {
-    title: 'Book in seconds',
-    desc: 'Choose pickup and drop locations, pick a box size, and confirm your shipment instantly.',
-    icon: '📦',
-  },
-  {
-    title: 'Live tracking',
-    desc: 'Follow your parcel on a live map from pickup to delivery, every step of the way.',
-    icon: '📍',
-  },
-  {
-    title: 'Trusted couriers',
-    desc: 'Our riders are rated by real customers so you always know who is carrying your package.',
-    icon: '🚚',
-  },
-]
+const NAV_LINKS = ['Ship', 'Track', 'Pricing', 'Couriers', 'Help']
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 28 },
+  visible: (i) => ({
+    opacity: 1,
+    y: 0,
+    transition: { delay: i * 0.15, duration: 0.6, ease: [0.22, 1, 0.36, 1] },
+  }),
+}
 
 export default function Home() {
+  const [menuOpen, setMenuOpen] = useState(false)
+
   return (
-    <div>
-      <section className="relative overflow-hidden bg-brand-light">
-        <div className="mx-auto grid max-w-6xl items-center gap-10 px-6 py-16 md:grid-cols-2 md:py-24">
-          <div className="order-2 md:order-1">
-            <p className="mb-3 inline-block rounded-full bg-white px-4 py-1 text-sm font-semibold text-brand shadow-sm">
-              Fast. Reliable. Tracked.
-            </p>
-            <h1 className="text-4xl font-extrabold leading-tight text-ink md:text-5xl">
-              Deliver anything,
-              <br /> anywhere, <span className="text-brand">on time.</span>
-            </h1>
-            <p className="mt-4 max-w-md text-lg text-ink/70">
-              Parcello connects you with couriers who pick up, transport, and deliver your
-              parcels with live tracking from start to finish.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-4">
+    <div className="relative w-full min-h-screen" style={{ fontFamily: 'var(--font-body)', color: 'var(--color-text)' }}>
+      <DeliveryRoadScene />
+
+      <div className="relative z-10">
+        <nav
+          className="mx-auto flex items-center justify-between px-5 py-4 sm:px-8 sm:py-5"
+          style={{ maxWidth: 1280 }}
+        >
+          <Logo />
+
+          <div className="hidden items-center gap-8 md:flex">
+            {NAV_LINKS.map((link) => (
+              <a key={link} href="#" className="text-sm font-medium opacity-80 hover:opacity-100">
+                {link}
+              </a>
+            ))}
+          </div>
+
+          <div className="hidden items-center gap-3 md:flex">
+            <Link
+              to="/login"
+              className="rounded-full px-5 py-2.5 text-sm font-semibold"
+              style={{ background: '#F2F2EE', color: 'var(--color-text)' }}
+            >
+              Sign In
+            </Link>
+            <Link
+              to="/signup"
+              className="rounded-full px-5 py-2.5 text-sm font-semibold text-white"
+              style={{ background: '#f5821f' }}
+            >
+              Start For Free
+            </Link>
+          </div>
+
+          <button className="md:hidden" onClick={() => setMenuOpen(true)} aria-label="Open menu">
+            <Menu size={26} color="#192837" />
+          </button>
+        </nav>
+
+        <div className="mx-auto px-5 sm:px-8" style={{ maxWidth: 1280, paddingTop: 'clamp(40px, 8vw, 72px)' }}>
+          <div style={{ maxWidth: 560 }}>
+            <motion.h1
+              custom={0}
+              initial="hidden"
+              animate="visible"
+              variants={fadeUp}
+              style={{
+                fontFamily: 'var(--font-heading)',
+                fontSize: 'clamp(1.65rem, 5vw, 3rem)',
+                lineHeight: 1.05,
+                letterSpacing: '-0.01em',
+                color: '#192837',
+                marginBottom: 24,
+              }}
+            >
+              <Truck
+                size={28}
+                color="#192837"
+                style={{ display: 'inline', verticalAlign: 'middle', position: 'relative', top: -2, marginRight: 8 }}
+              />
+              Deliver On Time, Every Time
+            </motion.h1>
+
+            <motion.p
+              custom={1}
+              initial="hidden"
+              animate="visible"
+              variants={fadeUp}
+              style={{
+                fontFamily: 'var(--font-body)',
+                fontSize: 'clamp(0.9rem, 2.5vw, 1.1rem)',
+                lineHeight: 1.65,
+                opacity: 0.8,
+                maxWidth: 560,
+              }}
+            >
+              Book a pickup, track it live, get it delivered.
+            </motion.p>
+
+            <motion.div custom={2} initial="hidden" animate="visible" variants={fadeUp} style={{ marginTop: 32 }}>
               <Link
                 to="/signup"
-                className="rounded-full bg-brand px-7 py-3 font-semibold text-white shadow-lg shadow-orange-200 hover:bg-brand-dark"
+                className="inline-flex items-center font-semibold text-white"
+                style={{
+                  background: '#f5821f',
+                  borderRadius: 50,
+                  padding: '17px 24px',
+                  fontFamily: 'var(--font-body)',
+                  fontSize: 'clamp(0.9rem, 2vw, 1rem)',
+                  boxShadow: '0 4px 24px rgba(245,130,31,0.28)',
+                  minWidth: 210,
+                  justifyContent: 'space-between',
+                  gap: 32,
+                  transition: 'transform 0.2s ease, filter 0.2s ease',
+                }}
+                onMouseDown={(e) => (e.currentTarget.style.transform = 'scale(0.96)')}
+                onMouseUp={(e) => (e.currentTarget.style.transform = 'scale(1.04)')}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'scale(1.04)'
+                  e.currentTarget.style.filter = 'brightness(1.1)'
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'scale(1)'
+                  e.currentTarget.style.filter = 'brightness(1)'
+                }}
               >
-                Create an account
+                Ship For Free
+                <ArrowRightCircle size={20} />
               </Link>
-              <Link
-                to="/login"
-                className="rounded-full border border-brand px-7 py-3 font-semibold text-brand hover:bg-white"
-              >
-                I already have an account
-              </Link>
-            </div>
-          </div>
-          <div className="order-1 flex justify-center md:order-2">
-            <CourierIllustration className="h-[420px] w-auto drop-shadow-xl" />
+            </motion.div>
           </div>
         </div>
-      </section>
+      </div>
 
-      <section className="mx-auto max-w-6xl px-6 py-16">
-        <h2 className="text-center text-3xl font-bold text-ink">Why ship with Parcello?</h2>
-        <div className="mt-10 grid gap-8 md:grid-cols-3">
-          {FEATURES.map((f) => (
-            <div key={f.title} className="rounded-2xl border border-orange-100 bg-white p-6 shadow-sm">
-              <div className="text-3xl">{f.icon}</div>
-              <h3 className="mt-4 text-lg font-semibold text-ink">{f.title}</h3>
-              <p className="mt-2 text-sm text-ink/70">{f.desc}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="bg-ink py-16 text-center text-white">
-        <h2 className="text-3xl font-bold">Ready to send your first parcel?</h2>
-        <p className="mt-2 text-white/70">Join Parcello today — it only takes a minute.</p>
-        <Link
-          to="/signup"
-          className="mt-6 inline-block rounded-full bg-brand px-8 py-3 font-semibold text-white hover:bg-brand-dark"
-        >
-          Get Started
-        </Link>
-      </section>
+      <MobileMenuSheet open={menuOpen} onClose={() => setMenuOpen(false)} />
     </div>
   )
 }
