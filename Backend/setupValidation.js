@@ -51,6 +51,7 @@ const VALIDATORS = {
       properties: {
         country: { bsonType: 'string', minLength: 1 },
         city: { bsonType: 'string', minLength: 1 },
+        label: { bsonType: ['string', 'null'] },
         lat: { bsonType: ['double', 'int', 'null'] },
         lng: { bsonType: ['double', 'int', 'null'] },
       },
@@ -159,7 +160,7 @@ const INDEXES = {
     { keys: { accountType: 1 }, options: { name: 'idx_accountType' } },
   ],
   vehicles: [{ keys: { licenseNumber: 1 }, options: { unique: true, name: 'uniq_licenseNumber' } }],
-  locations: [{ keys: { city: 1, country: 1 }, options: { unique: true, name: 'uniq_city_country' } }],
+  locations: [{ keys: { city: 1, country: 1 }, options: { name: 'idx_city_country' } }],
   routes: [{ keys: { origin: 1, destination: 1 }, options: { unique: true, name: 'uniq_origin_destination' } }],
   batches: [
     { keys: { status: 1 }, options: { name: 'idx_status' } },

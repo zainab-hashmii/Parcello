@@ -1,23 +1,11 @@
-import { MapContainer, TileLayer, Marker, Popup, Polyline } from 'react-leaflet'
+import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap } from 'react-leaflet'
+import { useEffect } from 'react'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 
-// City coordinate lookup for demo purposes since the backend only stores city/country, not lat/lng.
-const CITY_COORDS = {
-  karachi: [24.8607, 67.0011],
-  lahore: [31.5497, 74.3436],
-  islamabad: [33.6844, 73.0479],
-  rawalpindi: [33.5651, 73.0169],
-  faisalabad: [31.4504, 73.135],
-  multan: [30.1575, 71.5249],
-  peshawar: [34.0151, 71.5249],
-  quetta: [30.1798, 66.975],
-}
-
-function coordsFor(city) {
-  if (!city) return null
-  const key = city.trim().toLowerCase()
-  return CITY_COORDS[key] || null
+function toLatLng(loc) {
+  if (!loc || loc.lat == null || loc.lng == null) return null
+  return [loc.lat, loc.lng]
 }
 
 const pickupIcon = new L.Icon({
@@ -44,37 +32,52 @@ const currentIcon = new L.Icon({
   iconAnchor: [18, 18],
 })
 
-export default function TrackingMap({ originCity, destinationCity, currentCity }) {
-  const origin = coordsFor(originCity)
-  const destination = coordsFor(destinationCity)
-  const current = coordsFor(currentCity) || origin
+function FitToMarkers({ points }) {
+  const map = useMap()
+  useEffect(() => {
+    if (points.length === 0) return
+    if (points.length === 1) {
+      map.setView(points[0], 12)
+    } else {
+      map.fitBounds(points, { padding: [40, 40] })
+    }
+  }, [JSON.stringify(points)])
+  return null
+}
+
+export default function TrackingMap({ origin, destination, current }) {
+  const originPos = toLatLng(origin)
+  const destinationPos = toLatLng(destination)
+  const currentPos = toLatLng(current) || originPos
 
   const fallbackCenter = [30.3753, 69.3451] // Pakistan center fallback
-  const center = current || origin || destination || fallbackCenter
+  const points = [originPos, destinationPos, currentPos].filter(Boolean)
+  const center = points[0] || fallbackCenter
 
   return (
-    <MapContainer center={center} zoom={origin && destination ? 6 : 5} className="h-full w-full">
+    <MapContainer center={center} zoom={points.length ? 6 : 5} className="h-full w-full">
       <TileLayer
         attribution='&copy; OpenStreetMap contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      {origin && (
-        <Marker position={origin} icon={pickupIcon}>
-          <Popup>Pickup: {originCity}</Popup>
+      <FitToMarkers points={points} />
+      {originPos && (
+        <Marker position={originPos} icon={pickupIcon}>
+          <Popup>Pickup: {origin?.label || origin?.city}</Popup>
         </Marker>
       )}
-      {destination && (
-        <Marker position={destination} icon={dropIcon}>
-          <Popup>Drop: {destinationCity}</Popup>
+      {destinationPos && (
+        <Marker position={destinationPos} icon={dropIcon}>
+          <Popup>Drop: {destination?.label || destination?.city}</Popup>
         </Marker>
       )}
-      {current && (
-        <Marker position={current} icon={currentIcon}>
-          <Popup>Current location: {currentCity || originCity}</Popup>
+      {currentPos && (
+        <Marker position={currentPos} icon={currentIcon}>
+          <Popup>Current location: {current?.label || current?.city || origin?.label || origin?.city}</Popup>
         </Marker>
       )}
-      {origin && destination && (
-        <Polyline positions={[origin, destination]} pathOptions={{ color: '#f5821f', weight: 3, dashArray: '6 8' }} />
+      {originPos && destinationPos && (
+        <Polyline positions={[originPos, destinationPos]} pathOptions={{ color: '#f5821f', weight: 3, dashArray: '6 8' }} />
       )}
     </MapContainer>
   )

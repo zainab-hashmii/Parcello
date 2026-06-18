@@ -57,22 +57,34 @@ router.post('/', async (req, res) => {
   }
 });
 
-// GET /api/pricing/quote?originId=...&destinationId=...&weight=...
+// Resolves {lat, lng} either from raw query coords or by looking up a Location id.
+async function resolvePoint(query, prefix) {
+  const lat = query[`${prefix}Lat`];
+  const lng = query[`${prefix}Lng`];
+  if (lat != null && lng != null) return { lat: Number(lat), lng: Number(lng) };
+
+  const id = query[`${prefix}Id`];
+  if (!id) return null;
+  const loc = await Location.findById(id);
+  if (!loc || loc.lat == null) return null;
+  return { lat: loc.lat, lng: loc.lng };
+}
+
+// GET /api/pricing/quote?weight=...
+//   and either originId/destinationId, or originLat/originLng/destinationLat/destinationLng
 router.get('/quote', async (req, res) => {
   try {
-    const { originId, destinationId, weight } = req.query;
-    const w = Number(weight);
-    if (!originId || !destinationId || !w || w <= 0) {
-      return res.status(400).json({ error: 'originId, destinationId and a positive weight are required' });
+    const w = Number(req.query.weight);
+    if (!w || w <= 0) {
+      return res.status(400).json({ error: 'A positive weight is required' });
     }
 
     const [origin, destination] = await Promise.all([
-      Location.findById(originId),
-      Location.findById(destinationId),
+      resolvePoint(req.query, 'origin'),
+      resolvePoint(req.query, 'destination'),
     ]);
-    if (!origin || !destination) return res.status(404).json({ error: 'Origin or destination not found' });
-    if (origin.lat == null || destination.lat == null) {
-      return res.status(422).json({ error: 'Selected locations are missing coordinates for distance pricing' });
+    if (!origin || !destination) {
+      return res.status(422).json({ error: 'Pickup and drop coordinates are required for distance pricing' });
     }
 
     const distanceKm = Math.round(haversineKm(origin, destination) * 10) / 10;

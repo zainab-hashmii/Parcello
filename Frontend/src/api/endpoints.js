@@ -62,3 +62,13 @@ export const getPricingConfig = () => api.get('/pricing')
 export const updatePricingConfig = (payload) => api.post('/pricing', payload)
 export const getPriceQuote = (originId, destinationId, weight) =>
   api.get('/pricing/quote', { params: { originId, destinationId, weight } })
+export const getPriceQuoteByCoords = (origin, destination, weight) =>
+  api.get('/pricing/quote', {
+    params: {
+      originLat: origin.lat,
+      originLng: origin.lng,
+      destinationLat: destination.lat,
+      destinationLng: destination.lng,
+      weight,
+    },
+  })

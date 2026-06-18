@@ -34,9 +34,9 @@ export default function TrackParcel() {
       <div className="mt-6 grid gap-6 md:grid-cols-[1.4fr_1fr]">
         <div className="h-96 overflow-hidden rounded-2xl border border-orange-100 shadow-sm">
           <TrackingMap
-            originCity={parcel.origin?.city}
-            destinationCity={parcel.destination?.city}
-            currentCity={log.location?.city}
+            origin={parcel.origin}
+            destination={parcel.destination}
+            current={log.location}
           />
         </div>
 

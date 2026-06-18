@@ -8,20 +8,37 @@ const Location = require('../models/Location');
 const Route = require('../models/Route');
 const User = require('../models/User');
 
+// Resolves a location from either a map-picked point (lat/lng/label/city/country)
+// or the legacy city/country-only lookup against existing Location records.
+async function resolveLocation({ lat, lng, label, city, country }) {
+  if (lat != null && lng != null) {
+    return Location.create({
+      city: city || label || 'Unknown',
+      country: country || 'Unknown',
+      label,
+      lat,
+      lng,
+    });
+  }
+  return Location.findOne({ city, country });
+}
+
 // POST /api/parcel/addParcel — main parcel creation flow
 router.post('/addParcel', async (req, res) => {
   try {
     const {
-      customerId, destinationCity, destinationCountry,
-      originCity, originCountry, placementDate,
-      type, weight, address, sendAddress,
+      customerId, placementDate, type, weight, address, sendAddress,
+      destinationCity, destinationCountry, destinationLat, destinationLng, destinationLabel,
+      originCity, originCountry, originLat, originLng, originLabel,
     } = req.body;
 
     const customer = await User.findById(customerId);
     if (!customer) return res.status(404).json({ error: 'Customer not found' });
 
-    const destination = await Location.findOne({ city: destinationCity, country: destinationCountry });
-    const origin = await Location.findOne({ city: originCity, country: originCountry });
+    const [origin, destination] = await Promise.all([
+      resolveLocation({ lat: originLat, lng: originLng, label: originLabel, city: originCity, country: originCountry }),
+      resolveLocation({ lat: destinationLat, lng: destinationLng, label: destinationLabel, city: destinationCity, country: destinationCountry }),
+    ]);
     if (!destination || !origin) return res.status(404).json({ error: 'Origin or destination not found' });
 
     // Find or create batch
