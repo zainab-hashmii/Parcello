@@ -27,7 +27,9 @@ export default function Login() {
           : '/customer'
       navigate(dest)
     } catch (err) {
-      setError(err.response?.data?.message || err.response?.data || 'Login failed. Check your credentials.')
+      const data = err.response?.data
+      const message = typeof data === 'string' ? data : data?.error || data?.message
+      setError(message || 'Login failed. Check your credentials.')
     } finally {
       setLoading(false)
     }
@@ -57,7 +59,7 @@ export default function Login() {
             className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none focus:border-brand"
           />
 
-          {error && <p className="text-sm text-red-500">{String(error)}</p>}
+          {error && <p className="text-sm text-red-500">{error}</p>}
 
           <button
             type="submit"

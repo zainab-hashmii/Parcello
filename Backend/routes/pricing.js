@@ -10,10 +10,16 @@ async function getOrCreateConfig() {
   return config;
 }
 
+// A delivery vehicle carries many parcels per trip, so a single parcel only
+// owes its proportional share of that trip's fuel cost — not the whole tank.
+// STANDARD_LOAD_KG mirrors the batch "Ready" threshold used elsewhere (80kg).
+const STANDARD_LOAD_KG = 80;
+
 function computePrice(config, weight, distanceKm) {
   const distanceCost = weight * distanceKm * config.ratePerKgPerKm;
   const litersUsed = distanceKm / config.mileageKmPerLiter;
-  const fuelCost = litersUsed * config.fuelPricePerLiter;
+  const tripFuelCost = litersUsed * config.fuelPricePerLiter;
+  const fuelCost = tripFuelCost * (weight / STANDARD_LOAD_KG);
   const amount = config.baseFare + distanceCost + fuelCost;
   return {
     baseFare: config.baseFare,
