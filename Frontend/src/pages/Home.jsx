@@ -29,11 +29,16 @@ export default function Home() {
           className="mx-auto flex items-center justify-between px-5 py-4 sm:px-8 sm:py-5"
           style={{ maxWidth: 1280 }}
         >
-          <Logo />
+          <Logo light />
 
           <div className="hidden items-center gap-8 md:flex">
             {NAV_LINKS.map((link) => (
-              <a key={link} href="#" className="text-sm font-medium opacity-80 hover:opacity-100">
+              <a
+                key={link}
+                href="#"
+                className="text-sm font-medium text-white opacity-90 hover:opacity-100"
+                style={{ textShadow: '0 1px 6px rgba(0,0,0,0.4)' }}
+              >
                 {link}
               </a>
             ))}
@@ -57,7 +62,7 @@ export default function Home() {
           </div>
 
           <button className="md:hidden" onClick={() => setMenuOpen(true)} aria-label="Open menu">
-            <Menu size={26} color="#192837" />
+            <Menu size={26} color="#ffffff" style={{ filter: 'drop-shadow(0 1px 4px rgba(0,0,0,0.5))' }} />
           </button>
         </nav>
 
@@ -73,13 +78,14 @@ export default function Home() {
                 fontSize: 'clamp(1.65rem, 5vw, 3rem)',
                 lineHeight: 1.05,
                 letterSpacing: '-0.01em',
-                color: '#192837',
-                marginBottom: 24,
+                color: '#ffffff',
+                textShadow: '0 2px 18px rgba(0,0,0,0.45), 0 1px 3px rgba(0,0,0,0.55)',
+                marginBottom: 20,
               }}
             >
               <Truck
                 size={28}
-                color="#192837"
+                color="#ffffff"
                 style={{ display: 'inline', verticalAlign: 'middle', position: 'relative', top: -2, marginRight: 8 }}
               />
               Deliver On Time, Every Time
@@ -94,28 +100,34 @@ export default function Home() {
                 fontFamily: 'var(--font-body)',
                 fontSize: 'clamp(0.9rem, 2.5vw, 1.1rem)',
                 lineHeight: 1.65,
-                opacity: 0.8,
+                color: '#ffffff',
+                textShadow: '0 1px 12px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.5)',
                 maxWidth: 560,
               }}
             >
               Book a pickup, track it live, get it delivered.
             </motion.p>
 
-            <motion.div custom={2} initial="hidden" animate="visible" variants={fadeUp} style={{ marginTop: 32 }}>
+            <motion.div
+              custom={2}
+              initial="hidden"
+              animate="visible"
+              variants={fadeUp}
+              className="mt-8 block"
+            >
               <Link
                 to="/signup"
-                className="inline-flex items-center font-semibold text-white"
+                className="flex items-center justify-center gap-3 font-semibold text-white"
                 style={{
                   background: '#f5821f',
                   borderRadius: 50,
-                  padding: '17px 24px',
+                  padding: '17px 28px',
                   fontFamily: 'var(--font-body)',
                   fontSize: 'clamp(0.9rem, 2vw, 1rem)',
-                  boxShadow: '0 4px 24px rgba(245,130,31,0.28)',
-                  minWidth: 210,
-                  justifyContent: 'space-between',
-                  gap: 32,
+                  boxShadow: '0 4px 24px rgba(245,130,31,0.4)',
                   transition: 'transform 0.2s ease, filter 0.2s ease',
+                  width: 'fit-content',
+                  maxWidth: '100%',
                 }}
                 onMouseDown={(e) => (e.currentTarget.style.transform = 'scale(0.96)')}
                 onMouseUp={(e) => (e.currentTarget.style.transform = 'scale(1.04)')}
