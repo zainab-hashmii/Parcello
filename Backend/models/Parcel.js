@@ -35,12 +35,27 @@ parcelSchema.post('save', async function (doc) {
   const existingPayment = await Payment.findOne({ parcel: doc._id });
   if (!existingPayment && doc.origin && doc.destination) {
     const route = await Route.findOne({ origin: doc.origin, destination: doc.destination });
+    let amount = null;
+
     if (route) {
-      await Payment.create({
-        amount: route.basePayment * doc.weight,
-        paymentStatus: 'Pending',
-        parcel: doc._id,
-      });
+      amount = route.basePayment * doc.weight;
+    } else {
+      const Location = mongoose.model('Location');
+      const { getOrCreateConfig, computePrice } = require('../routes/pricing');
+      const [origin, destination] = await Promise.all([
+        Location.findById(doc.origin),
+        Location.findById(doc.destination),
+      ]);
+      if (origin?.lat != null && destination?.lat != null) {
+        const { haversineKm } = require('../utils/distance');
+        const distanceKm = haversineKm(origin, destination);
+        const config = await getOrCreateConfig();
+        amount = computePrice(config, doc.weight, distanceKm).amount;
+      }
+    }
+
+    if (amount != null) {
+      await Payment.create({ amount, paymentStatus: 'Pending', parcel: doc._id });
     }
   }
 });

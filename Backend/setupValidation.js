@@ -51,6 +51,8 @@ const VALIDATORS = {
       properties: {
         country: { bsonType: 'string', minLength: 1 },
         city: { bsonType: 'string', minLength: 1 },
+        lat: { bsonType: ['double', 'int', 'null'] },
+        lng: { bsonType: ['double', 'int', 'null'] },
       },
     },
   },
@@ -134,6 +136,18 @@ const VALIDATORS = {
         stars: { bsonType: 'number', minimum: 1, maximum: 5 },
         review: { bsonType: ['string', 'null'] },
         rider: { bsonType: 'objectId' },
+      },
+    },
+  },
+
+  pricingconfigs: {
+    $jsonSchema: {
+      bsonType: 'object',
+      properties: {
+        baseFare: { bsonType: 'number', minimum: 0 },
+        ratePerKgPerKm: { bsonType: 'number', minimum: 0 },
+        fuelPricePerLiter: { bsonType: 'number', minimum: 0 },
+        mileageKmPerLiter: { bsonType: 'number', exclusiveMinimum: true, minimum: 0 },
       },
     },
   },

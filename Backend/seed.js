@@ -14,12 +14,12 @@ const Payment = require('./models/Payment');
 const Rating = require('./models/Rating');
 
 const CITIES = [
-  { city: 'Karachi', country: 'Pakistan' },
-  { city: 'Lahore', country: 'Pakistan' },
-  { city: 'Islamabad', country: 'Pakistan' },
-  { city: 'Faisalabad', country: 'Pakistan' },
-  { city: 'Multan', country: 'Pakistan' },
-  { city: 'Peshawar', country: 'Pakistan' },
+  { city: 'Karachi', country: 'Pakistan', lat: 24.8607, lng: 67.0011 },
+  { city: 'Lahore', country: 'Pakistan', lat: 31.5497, lng: 74.3436 },
+  { city: 'Islamabad', country: 'Pakistan', lat: 33.6844, lng: 73.0479 },
+  { city: 'Faisalabad', country: 'Pakistan', lat: 31.4504, lng: 73.1350 },
+  { city: 'Multan', country: 'Pakistan', lat: 30.1575, lng: 71.5249 },
+  { city: 'Peshawar', country: 'Pakistan', lat: 34.0151, lng: 71.5249 },
 ];
 
 // basePayment = price per kg

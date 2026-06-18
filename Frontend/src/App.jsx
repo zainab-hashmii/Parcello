@@ -12,6 +12,7 @@ import RegisterVehicle from './pages/rider/RegisterVehicle'
 import AdminDashboard from './pages/admin/AdminDashboard'
 import ManageLocations from './pages/admin/ManageLocations'
 import ManageRoutes from './pages/admin/ManageRoutes'
+import PricingSettings from './pages/admin/PricingSettings'
 
 function App() {
   const location = useLocation()
@@ -88,6 +89,14 @@ function App() {
           element={
             <ProtectedRoute role="Admin">
               <ManageRoutes />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/pricing"
+          element={
+            <ProtectedRoute role="Admin">
+              <PricingSettings />
             </ProtectedRoute>
           }
         />

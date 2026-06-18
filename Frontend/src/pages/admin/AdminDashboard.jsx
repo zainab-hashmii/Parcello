@@ -38,6 +38,9 @@ export default function AdminDashboard() {
           <Link to="/admin/routes" className="rounded-full bg-orange-50 px-4 py-2 text-sm font-semibold text-brand hover:bg-orange-100">
             Manage routes
           </Link>
+          <Link to="/admin/pricing" className="rounded-full bg-orange-50 px-4 py-2 text-sm font-semibold text-brand hover:bg-orange-100">
+            Pricing settings
+          </Link>
         </div>
       </div>
 

@@ -18,6 +18,7 @@ app.use('/api/Payment',   require('./routes/payment'));
 app.use('/api/Location',  require('./routes/location'));
 app.use('/api/Rating',    require('./routes/rating'));
 app.use('/api/route',     require('./routes/route'));
+app.use('/api/pricing',   require('./routes/pricing'));
 
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {

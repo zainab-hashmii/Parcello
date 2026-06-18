@@ -41,11 +41,16 @@ router.post('/addParcel', async (req, res) => {
       await batch.save();
     }
 
-    const route = await Route.findOne({ origin: origin._id, destination: destination._id });
-    if (!route) return res.status(404).json({ error: 'No route found from origin to destination' });
+    if (origin.lat == null || destination.lat == null) {
+      const route = await Route.findOne({ origin: origin._id, destination: destination._id });
+      if (!route) {
+        return res.status(422).json({ error: 'Selected locations are missing coordinates for distance pricing, and no manual route exists' });
+      }
+    }
 
     // Parcel.post('save') trigger auto-creates the matching ParcelLog (WAITING)
-    // and Payment (Pending, amount = route.basePayment * weight) once saved.
+    // and Payment (Pending, amount computed from a manual Route if one exists,
+    // otherwise from weight x distance x fuel price) once saved.
     await Parcel.create({
       type, weight, origin: origin._id, destination: destination._id,
       customer: customerId, address, sendAddress, batch: batch._id,
