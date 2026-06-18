@@ -41,20 +41,15 @@ router.post('/addParcel', async (req, res) => {
       await batch.save();
     }
 
-    const parcel = await Parcel.create({
-      type, weight, origin: origin._id, destination: destination._id,
-      customer: customerId, address, sendAddress, batch: batch._id,
-    });
-
-    await ParcelLog.create({
-      parcel: parcel._id, status: 'WAITING', placementDate, location: origin._id,
-    });
-
     const route = await Route.findOne({ origin: origin._id, destination: destination._id });
     if (!route) return res.status(404).json({ error: 'No route found from origin to destination' });
 
-    const amount = route.basePayment * weight;
-    await Payment.create({ amount, paymentStatus: 'Pending', parcel: parcel._id });
+    // Parcel.post('save') trigger auto-creates the matching ParcelLog (WAITING)
+    // and Payment (Pending, amount = route.basePayment * weight) once saved.
+    await Parcel.create({
+      type, weight, origin: origin._id, destination: destination._id,
+      customer: customerId, address, sendAddress, batch: batch._id,
+    });
 
     res.json('Parcel, Parcel_log, Payment Have been Added');
   } catch (err) {
