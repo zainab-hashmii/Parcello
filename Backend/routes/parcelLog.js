@@ -7,7 +7,8 @@ const Parcel = require('../models/Parcel');
 router.get('/', async (req, res) => {
   try {
     const log = await ParcelLog.findOne({ parcel: req.query.parcelID })
-      .populate('parcel location');
+      .populate({ path: 'parcel', populate: ['origin', 'destination'] })
+      .populate('location');
     if (!log) return res.status(404).json({ error: 'Log not found' });
     res.json(log);
   } catch (err) {

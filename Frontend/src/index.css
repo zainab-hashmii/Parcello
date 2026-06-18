@@ -1,0 +1,21 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand: #f5821f;
+  --color-brand-dark: #d9690a;
+  --color-brand-light: #fff3e6;
+  --color-ink: #1f2430;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
+  background-color: #fdfbf7;
+  color: var(--color-ink);
+}
+
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+  border-radius: 1rem;
+}
