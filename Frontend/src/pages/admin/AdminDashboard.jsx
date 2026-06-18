@@ -1,6 +1,13 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { motion } from 'framer-motion'
 import { getAllUsers, getBatches, getPayments, getLocations } from '../../api/endpoints'
+import { StaggerGroup, StaggerItem } from '../../components/StaggerList'
+
+const tableRowVariants = {
+  hidden: { opacity: 0, x: -8 },
+  visible: { opacity: 1, x: 0, transition: { duration: 0.3, ease: [0.22, 1, 0.36, 1] } },
+}
 
 export default function AdminDashboard() {
   const [users, setUsers] = useState([])
@@ -32,32 +39,36 @@ export default function AdminDashboard() {
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-ink">Admin overview</h1>
         <div className="flex gap-3">
-          <Link to="/admin/locations" className="rounded-full bg-orange-50 px-4 py-2 text-sm font-semibold text-brand hover:bg-orange-100">
+          <Link to="/admin/locations" className="rounded-full bg-orange-50 px-4 py-2 text-sm font-semibold text-brand transition hover:bg-orange-100">
             Manage locations
           </Link>
-          <Link to="/admin/routes" className="rounded-full bg-orange-50 px-4 py-2 text-sm font-semibold text-brand hover:bg-orange-100">
+          <Link to="/admin/routes" className="rounded-full bg-orange-50 px-4 py-2 text-sm font-semibold text-brand transition hover:bg-orange-100">
             Manage routes
           </Link>
-          <Link to="/admin/pricing" className="rounded-full bg-orange-50 px-4 py-2 text-sm font-semibold text-brand hover:bg-orange-100">
+          <Link to="/admin/pricing" className="rounded-full bg-orange-50 px-4 py-2 text-sm font-semibold text-brand transition hover:bg-orange-100">
             Pricing settings
           </Link>
         </div>
       </div>
 
-      <div className="mt-6 grid gap-4 sm:grid-cols-3 lg:grid-cols-5">
+      <StaggerGroup className="mt-6 grid gap-4 sm:grid-cols-3 lg:grid-cols-5">
         {stats.map((s) => (
-          <div key={s.label} className="rounded-2xl border border-orange-100 bg-white p-5 shadow-sm">
+          <StaggerItem
+            key={s.label}
+            whileHover={{ y: -3 }}
+            className="rounded-2xl border border-orange-100 bg-white/80 p-5 shadow-sm backdrop-blur-sm"
+          >
             <p className="text-xs uppercase text-ink/40">{s.label}</p>
             <p className="mt-1 text-2xl font-bold text-ink">{s.value}</p>
-          </div>
+          </StaggerItem>
         ))}
-      </div>
+      </StaggerGroup>
 
       <section className="mt-10">
         <h2 className="text-lg font-semibold text-ink">Batches</h2>
-        <div className="mt-3 overflow-x-auto rounded-2xl border border-orange-100 bg-white shadow-sm">
+        <div className="mt-3 overflow-x-auto rounded-2xl border border-orange-100 bg-white/80 shadow-sm backdrop-blur-sm">
           <table className="w-full text-sm">
-            <thead className="bg-gray-50 text-left text-xs uppercase text-ink/40">
+            <thead className="bg-gray-50/80 text-left text-xs uppercase text-ink/40">
               <tr>
                 <th className="px-4 py-3">Route</th>
                 <th className="px-4 py-3">Weight</th>
@@ -65,45 +76,45 @@ export default function AdminDashboard() {
                 <th className="px-4 py-3">Rider</th>
               </tr>
             </thead>
-            <tbody>
+            <motion.tbody initial="hidden" animate="visible" transition={{ staggerChildren: 0.05 }}>
               {batches.map((b) => (
-                <tr key={b._id} className="border-t border-gray-100">
+                <motion.tr key={b._id} variants={tableRowVariants} className="border-t border-gray-100">
                   <td className="px-4 py-3">{b.currentLocation?.city} → {b.destination?.city}</td>
                   <td className="px-4 py-3">{b.weight}kg</td>
                   <td className="px-4 py-3">
                     <span className="rounded-full bg-orange-50 px-2 py-1 text-xs font-semibold text-brand">{b.status}</span>
                   </td>
                   <td className="px-4 py-3">{b.rider?.name || '—'}</td>
-                </tr>
+                </motion.tr>
               ))}
               {batches.length === 0 && (
                 <tr><td className="px-4 py-6 text-center text-ink/40" colSpan={4}>No batches yet.</td></tr>
               )}
-            </tbody>
+            </motion.tbody>
           </table>
         </div>
       </section>
 
       <section className="mt-10">
         <h2 className="text-lg font-semibold text-ink">Users</h2>
-        <div className="mt-3 overflow-x-auto rounded-2xl border border-orange-100 bg-white shadow-sm">
+        <div className="mt-3 overflow-x-auto rounded-2xl border border-orange-100 bg-white/80 shadow-sm backdrop-blur-sm">
           <table className="w-full text-sm">
-            <thead className="bg-gray-50 text-left text-xs uppercase text-ink/40">
+            <thead className="bg-gray-50/80 text-left text-xs uppercase text-ink/40">
               <tr>
                 <th className="px-4 py-3">Name</th>
                 <th className="px-4 py-3">Email</th>
                 <th className="px-4 py-3">Type</th>
               </tr>
             </thead>
-            <tbody>
+            <motion.tbody initial="hidden" animate="visible" transition={{ staggerChildren: 0.04 }}>
               {users.map((u) => (
-                <tr key={u._id} className="border-t border-gray-100">
+                <motion.tr key={u._id} variants={tableRowVariants} className="border-t border-gray-100">
                   <td className="px-4 py-3">{u.name}</td>
                   <td className="px-4 py-3">{u.email}</td>
                   <td className="px-4 py-3">{u.accountType}</td>
-                </tr>
+                </motion.tr>
               ))}
-            </tbody>
+            </motion.tbody>
           </table>
         </div>
       </section>

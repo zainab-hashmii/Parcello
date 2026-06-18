@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { motion } from 'framer-motion'
 import { signUp, getUserByEmail } from '../api/endpoints'
 import { useAuth } from '../context/AuthContext'
 
@@ -74,8 +75,13 @@ export default function Signup() {
   useEffect(() => () => clearTimeout(emailCheckTimer.current), [])
 
   return (
-    <div className="flex min-h-[calc(100vh-72px)] items-center justify-center bg-brand-light px-4 py-12">
-      <div className="w-full max-w-sm rounded-3xl bg-white p-8 shadow-xl">
+    <div className="flex min-h-[calc(100vh-72px)] items-center justify-center px-4 py-12">
+      <motion.div
+        initial={{ opacity: 0, y: 24, scale: 0.98 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+        className="w-full max-w-sm rounded-3xl border border-white/60 bg-white/80 p-8 shadow-xl backdrop-blur-md"
+      >
         <h1 className="text-2xl font-bold text-ink">Create Your Account</h1>
         <p className="mt-1 text-sm text-ink/60">Enter details below to create new account.</p>
 
@@ -85,7 +91,7 @@ export default function Signup() {
             placeholder="Your name"
             value={form.name}
             onChange={(e) => update('name', e.target.value)}
-            className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none focus:border-brand"
+            className="w-full rounded-xl border border-gray-200 bg-white/70 px-4 py-3 text-sm outline-none focus:border-brand"
           />
           <div>
             <input
@@ -94,7 +100,7 @@ export default function Signup() {
               placeholder="Your email"
               value={form.email}
               onChange={(e) => update('email', e.target.value)}
-              className={`w-full rounded-xl border bg-gray-50 px-4 py-3 text-sm outline-none focus:border-brand ${
+              className={`w-full rounded-xl border bg-white/70 px-4 py-3 text-sm outline-none focus:border-brand ${
                 emailTaken ? 'border-red-400' : 'border-gray-200'
               }`}
             />
@@ -110,14 +116,14 @@ export default function Signup() {
             placeholder="Your phone number"
             value={form.phone}
             onChange={(e) => update('phone', e.target.value)}
-            className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none focus:border-brand"
+            className="w-full rounded-xl border border-gray-200 bg-white/70 px-4 py-3 text-sm outline-none focus:border-brand"
           />
           <input
             required
             placeholder="Your address"
             value={form.address}
             onChange={(e) => update('address', e.target.value)}
-            className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none focus:border-brand"
+            className="w-full rounded-xl border border-gray-200 bg-white/70 px-4 py-3 text-sm outline-none focus:border-brand"
           />
           <input
             type="password"
@@ -125,13 +131,13 @@ export default function Signup() {
             placeholder="Enter password"
             value={form.password}
             onChange={(e) => update('password', e.target.value)}
-            className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none focus:border-brand"
+            className="w-full rounded-xl border border-gray-200 bg-white/70 px-4 py-3 text-sm outline-none focus:border-brand"
           />
           <input
             placeholder="Enter referral code (optional)"
             value={form.referralCode}
             onChange={(e) => update('referralCode', e.target.value)}
-            className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none focus:border-brand"
+            className="w-full rounded-xl border border-gray-200 bg-white/70 px-4 py-3 text-sm outline-none focus:border-brand"
           />
 
           <div className="flex gap-2 text-sm">
@@ -168,7 +174,7 @@ export default function Signup() {
             Login
           </Link>
         </p>
-      </div>
+      </motion.div>
     </div>
   )
 }

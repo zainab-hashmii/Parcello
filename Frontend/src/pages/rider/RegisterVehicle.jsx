@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { motion } from 'framer-motion'
 import { useAuth } from '../../context/AuthContext'
 import { registerVehicle } from '../../api/endpoints'
 
@@ -38,11 +39,17 @@ export default function RegisterVehicle() {
   return (
     <div className="mx-auto max-w-md px-4 py-10">
       <h1 className="text-2xl font-bold text-ink">Register your vehicle</h1>
-      <form onSubmit={handleSubmit} className="mt-6 space-y-4 rounded-2xl border border-orange-100 bg-white p-6 shadow-sm">
+      <motion.form
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+        onSubmit={handleSubmit}
+        className="mt-6 space-y-4 rounded-2xl border border-orange-100 bg-white/80 p-6 shadow-sm backdrop-blur-sm"
+      >
         <select
           value={vehicleType}
           onChange={(e) => setVehicleType(e.target.value)}
-          className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm"
+          className="w-full rounded-xl border border-gray-200 bg-white/70 px-4 py-3 text-sm"
         >
           <option value="TRUCK">Truck</option>
           <option value="SHIP">Ship</option>
@@ -53,14 +60,14 @@ export default function RegisterVehicle() {
           placeholder="Model"
           value={model}
           onChange={(e) => setModel(e.target.value)}
-          className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm"
+          className="w-full rounded-xl border border-gray-200 bg-white/70 px-4 py-3 text-sm"
         />
         <input
           required
           placeholder="License number"
           value={licenseNumber}
           onChange={(e) => setLicenseNumber(e.target.value)}
-          className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm"
+          className="w-full rounded-xl border border-gray-200 bg-white/70 px-4 py-3 text-sm"
         />
         <input
           required
@@ -68,16 +75,18 @@ export default function RegisterVehicle() {
           placeholder="Capacity"
           value={capacity}
           onChange={(e) => setCapacity(e.target.value)}
-          className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm"
+          className="w-full rounded-xl border border-gray-200 bg-white/70 px-4 py-3 text-sm"
         />
         {message && <p className="text-sm text-brand">{message}</p>}
-        <button
+        <motion.button
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
           type="submit"
           className="w-full rounded-xl bg-brand py-3 font-semibold text-white hover:bg-brand-dark"
         >
           Register vehicle
-        </button>
-      </form>
+        </motion.button>
+      </motion.form>
     </div>
   )
 }

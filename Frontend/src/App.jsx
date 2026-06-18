@@ -1,5 +1,8 @@
 import { Routes, Route, useLocation } from 'react-router-dom'
+import { AnimatePresence } from 'framer-motion'
 import Navbar from './components/Navbar'
+import PageBackground from './components/PageBackground'
+import PageTransition from './components/PageTransition'
 import ProtectedRoute from './components/ProtectedRoute'
 import Home from './pages/Home'
 import Login from './pages/Login'
@@ -20,87 +23,90 @@ function App() {
 
   return (
     <>
+      {!isHome && <PageBackground />}
       {!isHome && <Navbar />}
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
+      <AnimatePresence mode="wait">
+        <Routes location={location} key={location.pathname}>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<PageTransition><Login /></PageTransition>} />
+          <Route path="/signup" element={<PageTransition><Signup /></PageTransition>} />
 
-        <Route
-          path="/customer"
-          element={
-            <ProtectedRoute role="Customer">
-              <CustomerDashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/customer/book"
-          element={
-            <ProtectedRoute role="Customer">
-              <BookParcel />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/customer/track/:parcelId"
-          element={
-            <ProtectedRoute role="Customer">
-              <TrackParcel />
-            </ProtectedRoute>
-          }
-        />
+          <Route
+            path="/customer"
+            element={
+              <ProtectedRoute role="Customer">
+                <PageTransition><CustomerDashboard /></PageTransition>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/customer/book"
+            element={
+              <ProtectedRoute role="Customer">
+                <PageTransition><BookParcel /></PageTransition>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/customer/track/:parcelId"
+            element={
+              <ProtectedRoute role="Customer">
+                <PageTransition><TrackParcel /></PageTransition>
+              </ProtectedRoute>
+            }
+          />
 
-        <Route
-          path="/rider"
-          element={
-            <ProtectedRoute role="Rider">
-              <RiderDashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/rider/vehicle"
-          element={
-            <ProtectedRoute role="Rider">
-              <RegisterVehicle />
-            </ProtectedRoute>
-          }
-        />
+          <Route
+            path="/rider"
+            element={
+              <ProtectedRoute role="Rider">
+                <PageTransition><RiderDashboard /></PageTransition>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/rider/vehicle"
+            element={
+              <ProtectedRoute role="Rider">
+                <PageTransition><RegisterVehicle /></PageTransition>
+              </ProtectedRoute>
+            }
+          />
 
-        <Route
-          path="/admin"
-          element={
-            <ProtectedRoute role="Admin">
-              <AdminDashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/admin/locations"
-          element={
-            <ProtectedRoute role="Admin">
-              <ManageLocations />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/admin/routes"
-          element={
-            <ProtectedRoute role="Admin">
-              <ManageRoutes />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/admin/pricing"
-          element={
-            <ProtectedRoute role="Admin">
-              <PricingSettings />
-            </ProtectedRoute>
-          }
-        />
-      </Routes>
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute role="Admin">
+                <PageTransition><AdminDashboard /></PageTransition>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/locations"
+            element={
+              <ProtectedRoute role="Admin">
+                <PageTransition><ManageLocations /></PageTransition>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/routes"
+            element={
+              <ProtectedRoute role="Admin">
+                <PageTransition><ManageRoutes /></PageTransition>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/pricing"
+            element={
+              <ProtectedRoute role="Admin">
+                <PageTransition><PricingSettings /></PageTransition>
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </AnimatePresence>
     </>
   )
 }

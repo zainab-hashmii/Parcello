@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { motion, AnimatePresence } from 'framer-motion'
 import { useAuth } from '../../context/AuthContext'
 import { addParcel, getPriceQuoteByCoords } from '../../api/endpoints'
 import LocationPicker from '../../components/LocationPicker'
@@ -95,7 +96,7 @@ export default function BookParcel() {
         Search or pin the pickup &amp; drop locations on the map, then enter the weight — price is calculated from real distance, weight and fuel cost.
       </p>
 
-      <div className="mt-6 grid gap-4 rounded-2xl border border-orange-100 bg-white p-6 shadow-sm md:grid-cols-2">
+      <div className="mt-6 grid gap-4 rounded-2xl border border-orange-100 bg-white/80 p-6 shadow-sm backdrop-blur-sm md:grid-cols-2">
         <div>
           <label className="text-xs font-semibold uppercase text-ink/50">Pickup location</label>
           <div className="mt-1">
@@ -105,7 +106,7 @@ export default function BookParcel() {
             placeholder="Pickup note (e.g. house no, floor)"
             value={sendAddressNote}
             onChange={(e) => setSendAddressNote(e.target.value)}
-            className="mt-2 w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-sm"
+            className="mt-2 w-full rounded-xl border border-gray-200 bg-white/70 px-3 py-2 text-sm"
           />
         </div>
         <div>
@@ -117,12 +118,12 @@ export default function BookParcel() {
             placeholder="Delivery note (e.g. house no, floor)"
             value={addressNote}
             onChange={(e) => setAddressNote(e.target.value)}
-            className="mt-2 w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-sm"
+            className="mt-2 w-full rounded-xl border border-gray-200 bg-white/70 px-3 py-2 text-sm"
           />
         </div>
       </div>
 
-      <div className="mt-6 grid gap-4 rounded-2xl border border-orange-100 bg-white p-6 shadow-sm md:grid-cols-2">
+      <div className="mt-6 grid gap-4 rounded-2xl border border-orange-100 bg-white/80 p-6 shadow-sm backdrop-blur-sm md:grid-cols-2">
         <div>
           <label className="text-xs font-semibold uppercase text-ink/50">Parcel weight (kg)</label>
           <input
@@ -132,7 +133,7 @@ export default function BookParcel() {
             placeholder="e.g. 4.5"
             value={weight}
             onChange={(e) => setWeight(e.target.value)}
-            className="mt-1 w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-sm"
+            className="mt-1 w-full rounded-xl border border-gray-200 bg-white/70 px-3 py-2 text-sm"
           />
         </div>
         <div>
@@ -140,7 +141,7 @@ export default function BookParcel() {
           <select
             value={parcelType}
             onChange={(e) => setParcelType(e.target.value)}
-            className="mt-1 w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-sm"
+            className="mt-1 w-full rounded-xl border border-gray-200 bg-white/70 px-3 py-2 text-sm"
           >
             <option value="PACKAGE">Package</option>
             <option value="DOCUMENT">Document</option>
@@ -150,7 +151,7 @@ export default function BookParcel() {
         </div>
       </div>
 
-      <div className="mt-6 rounded-2xl border border-orange-100 bg-white p-6 shadow-sm">
+      <div className="mt-6 rounded-2xl border border-orange-100 bg-white/80 p-6 shadow-sm backdrop-blur-sm">
         <p className="text-sm font-medium text-ink/70">Price estimate</p>
 
         {quoting && <p className="mt-2 text-sm text-ink/50">Calculating price...</p>}
@@ -159,42 +160,53 @@ export default function BookParcel() {
           <p className="mt-2 text-sm text-ink/40">Pick pickup, drop and weight to see a price.</p>
         )}
 
-        {quote && (
-          <div className="mt-3">
-            <div className="flex items-baseline justify-between">
-              <span className="text-sm text-ink/60">Distance</span>
-              <span className="font-medium text-ink">{quote.distanceKm} km</span>
-            </div>
-            <div className="mt-1 flex items-baseline justify-between">
-              <span className="text-sm text-ink/60">Base fare</span>
-              <span className="font-medium text-ink">Rs {quote.baseFare}</span>
-            </div>
-            <div className="mt-1 flex items-baseline justify-between">
-              <span className="text-sm text-ink/60">Distance &amp; weight cost</span>
-              <span className="font-medium text-ink">Rs {quote.distanceCost}</span>
-            </div>
-            <div className="mt-1 flex items-baseline justify-between">
-              <span className="text-sm text-ink/60">Fuel surcharge</span>
-              <span className="font-medium text-ink">Rs {quote.fuelCost}</span>
-            </div>
-            <div className="mt-3 flex items-baseline justify-between border-t border-gray-100 pt-3">
-              <span className="font-semibold text-ink">Total</span>
-              <span className="text-xl font-bold text-brand">Rs {quote.amount}</span>
-            </div>
-          </div>
-        )}
+        <AnimatePresence mode="wait">
+          {quote && (
+            <motion.div
+              key={quote.amount}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+              className="mt-3"
+            >
+              <div className="flex items-baseline justify-between">
+                <span className="text-sm text-ink/60">Distance</span>
+                <span className="font-medium text-ink">{quote.distanceKm} km</span>
+              </div>
+              <div className="mt-1 flex items-baseline justify-between">
+                <span className="text-sm text-ink/60">Base fare</span>
+                <span className="font-medium text-ink">Rs {quote.baseFare}</span>
+              </div>
+              <div className="mt-1 flex items-baseline justify-between">
+                <span className="text-sm text-ink/60">Distance &amp; weight cost</span>
+                <span className="font-medium text-ink">Rs {quote.distanceCost}</span>
+              </div>
+              <div className="mt-1 flex items-baseline justify-between">
+                <span className="text-sm text-ink/60">Fuel surcharge</span>
+                <span className="font-medium text-ink">Rs {quote.fuelCost}</span>
+              </div>
+              <div className="mt-3 flex items-baseline justify-between border-t border-gray-100 pt-3">
+                <span className="font-semibold text-ink">Total</span>
+                <span className="text-xl font-bold text-brand">Rs {quote.amount}</span>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       {status && status !== 'success' && <p className="mt-4 text-sm text-red-500">{status}</p>}
       {status === 'success' && <p className="mt-4 text-sm text-green-600">Parcel booked! Redirecting...</p>}
 
-      <button
+      <motion.button
+        whileHover={{ scale: 1.01 }}
+        whileTap={{ scale: 0.98 }}
         onClick={handleConfirm}
         disabled={loading || quoting || !quote}
         className="mt-6 w-full rounded-xl bg-brand py-3 font-semibold text-white shadow-md hover:bg-brand-dark disabled:opacity-60"
       >
         {loading ? 'Booking...' : quote ? `Confirm Booking · Rs ${quote.amount}` : 'Confirm Booking'}
-      </button>
+      </motion.button>
     </div>
   )
 }

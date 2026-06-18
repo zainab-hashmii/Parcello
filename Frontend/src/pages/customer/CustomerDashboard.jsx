@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { motion } from 'framer-motion'
 import { useAuth } from '../../context/AuthContext'
 import { getParcelsOfCustomer } from '../../api/endpoints'
+import { StaggerGroup, StaggerItem } from '../../components/StaggerList'
 
 const STATUS_COLORS = {
   WAITING: 'bg-gray-100 text-gray-600',
@@ -39,49 +41,52 @@ export default function CustomerDashboard() {
           <p className="text-sm text-ink/60">Hello, {user.name?.split(' ')[0] || 'there'} 👋</p>
           <h1 className="text-2xl font-bold text-ink">Your shipments</h1>
         </div>
-        <Link
-          to="/customer/book"
-          className="rounded-full bg-brand px-6 py-3 font-semibold text-white shadow-md hover:bg-brand-dark"
-        >
-          + Book a parcel
-        </Link>
+        <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}>
+          <Link
+            to="/customer/book"
+            className="rounded-full bg-brand px-6 py-3 font-semibold text-white shadow-md hover:bg-brand-dark"
+          >
+            + Book a parcel
+          </Link>
+        </motion.div>
       </div>
 
       <input
         placeholder="Search by tracking ID or type..."
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        className="mt-6 w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm shadow-sm"
+        className="mt-6 w-full rounded-xl border border-gray-200 bg-white/80 px-4 py-3 text-sm shadow-sm backdrop-blur-sm"
       />
 
-      <div className="mt-6 space-y-3">
+      <StaggerGroup className="mt-6 space-y-3">
         {loading && <p className="text-sm text-ink/50">Loading shipments...</p>}
         {!loading && filtered.length === 0 && (
-          <p className="rounded-xl border border-dashed border-gray-200 p-8 text-center text-sm text-ink/50">
+          <p className="rounded-xl border border-dashed border-gray-200 bg-white/60 p-8 text-center text-sm text-ink/50">
             No shipments yet. Book your first parcel to see it here.
           </p>
         )}
         {filtered.map((p) => (
-          <Link
-            key={p._id}
-            to={`/customer/track/${p._id}`}
-            className="flex items-center justify-between rounded-2xl border border-orange-100 bg-white p-4 shadow-sm hover:border-brand"
-          >
-            <div className="flex items-center gap-4">
-              <span className="text-2xl">📦</span>
-              <div>
-                <p className="font-semibold text-ink">{p.type || 'Parcel'} · {p.weight}kg</p>
-                <p className="text-xs text-ink/50">
-                  {p.origin?.city} → {p.destination?.city}
-                </p>
+          <StaggerItem key={p._id}>
+            <Link
+              to={`/customer/track/${p._id}`}
+              className="flex items-center justify-between rounded-2xl border border-orange-100 bg-white/80 p-4 shadow-sm backdrop-blur-sm transition hover:border-brand hover:shadow-md"
+            >
+              <div className="flex items-center gap-4">
+                <span className="text-2xl">📦</span>
+                <div>
+                  <p className="font-semibold text-ink">{p.type || 'Parcel'} · {p.weight}kg</p>
+                  <p className="text-xs text-ink/50">
+                    {p.origin?.city} → {p.destination?.city}
+                  </p>
+                </div>
               </div>
-            </div>
-            <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-ink/70">
-              Track →
-            </span>
-          </Link>
+              <span className={`rounded-full px-3 py-1 text-xs font-semibold ${STATUS_COLORS.WAITING}`}>
+                Track →
+              </span>
+            </Link>
+          </StaggerItem>
         ))}
-      </div>
+      </StaggerGroup>
     </div>
   )
 }

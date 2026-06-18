@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { motion } from 'framer-motion'
 import { getPricingConfig, updatePricingConfig } from '../../api/endpoints'
+import { StaggerGroup, StaggerItem } from '../../components/StaggerList'
 
 const FIELDS = [
   { key: 'baseFare', label: 'Base fare (Rs)', step: '1' },
@@ -48,32 +50,42 @@ export default function PricingSettings() {
         Final price = base fare + (weight × distance × rate) + (distance ÷ mileage × fuel price).
       </p>
 
-      <form onSubmit={handleSubmit} className="mt-6 space-y-4 rounded-2xl border border-orange-100 bg-white p-6 shadow-sm">
-        {FIELDS.map((f) => (
-          <div key={f.key}>
-            <label className="text-xs font-semibold uppercase text-ink/50">{f.label}</label>
-            <input
-              type="number"
-              step={f.step}
-              min="0"
-              required
-              value={form[f.key]}
-              onChange={(e) => update(f.key, e.target.value)}
-              className="mt-1 w-full rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-sm"
-            />
-          </div>
-        ))}
+      <motion.form
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+        onSubmit={handleSubmit}
+        className="mt-6 space-y-4 rounded-2xl border border-orange-100 bg-white/80 p-6 shadow-sm backdrop-blur-sm"
+      >
+        <StaggerGroup className="space-y-4">
+          {FIELDS.map((f) => (
+            <StaggerItem key={f.key}>
+              <label className="text-xs font-semibold uppercase text-ink/50">{f.label}</label>
+              <input
+                type="number"
+                step={f.step}
+                min="0"
+                required
+                value={form[f.key]}
+                onChange={(e) => update(f.key, e.target.value)}
+                className="mt-1 w-full rounded-xl border border-gray-200 bg-white/70 px-3 py-2 text-sm"
+              />
+            </StaggerItem>
+          ))}
+        </StaggerGroup>
 
         {message && <p className="text-sm text-brand">{message}</p>}
 
-        <button
+        <motion.button
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
           type="submit"
           disabled={saving}
           className="w-full rounded-xl bg-brand py-3 font-semibold text-white hover:bg-brand-dark disabled:opacity-60"
         >
           {saving ? 'Saving...' : 'Save pricing'}
-        </button>
-      </form>
+        </motion.button>
+      </motion.form>
     </div>
   )
 }

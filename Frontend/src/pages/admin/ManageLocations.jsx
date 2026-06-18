@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { motion } from 'framer-motion'
 import { getLocations, createLocation } from '../../api/endpoints'
+import { StaggerGroup, StaggerItem } from '../../components/StaggerList'
 
 export default function ManageLocations() {
   const [locations, setLocations] = useState([])
@@ -45,20 +47,26 @@ export default function ManageLocations() {
         Latitude/longitude are used to calculate distance-based pricing — leave blank only if you'll set up manual routes instead.
       </p>
 
-      <form onSubmit={handleSubmit} className="mt-6 grid gap-2 rounded-2xl border border-orange-100 bg-white p-4 shadow-sm sm:grid-cols-2">
+      <motion.form
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+        onSubmit={handleSubmit}
+        className="mt-6 grid gap-2 rounded-2xl border border-orange-100 bg-white/80 p-4 shadow-sm backdrop-blur-sm sm:grid-cols-2"
+      >
         <input
           required
           placeholder="City"
           value={city}
           onChange={(e) => setCity(e.target.value)}
-          className="rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-sm"
+          className="rounded-xl border border-gray-200 bg-white/70 px-3 py-2 text-sm"
         />
         <input
           required
           placeholder="Country"
           value={country}
           onChange={(e) => setCountry(e.target.value)}
-          className="rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-sm"
+          className="rounded-xl border border-gray-200 bg-white/70 px-3 py-2 text-sm"
         />
         <input
           type="number"
@@ -66,7 +74,7 @@ export default function ManageLocations() {
           placeholder="Latitude (optional)"
           value={lat}
           onChange={(e) => setLat(e.target.value)}
-          className="rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-sm"
+          className="rounded-xl border border-gray-200 bg-white/70 px-3 py-2 text-sm"
         />
         <input
           type="number"
@@ -74,24 +82,31 @@ export default function ManageLocations() {
           placeholder="Longitude (optional)"
           value={lng}
           onChange={(e) => setLng(e.target.value)}
-          className="rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 text-sm"
+          className="rounded-xl border border-gray-200 bg-white/70 px-3 py-2 text-sm"
         />
-        <button className="rounded-xl bg-brand px-5 py-2 text-sm font-semibold text-white hover:bg-brand-dark sm:col-span-2">
+        <motion.button
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          className="rounded-xl bg-brand px-5 py-2 text-sm font-semibold text-white hover:bg-brand-dark sm:col-span-2"
+        >
           Add
-        </button>
-      </form>
+        </motion.button>
+      </motion.form>
       {message && <p className="mt-2 text-sm text-brand">{message}</p>}
 
-      <div className="mt-6 space-y-2">
+      <StaggerGroup className="mt-6 space-y-2">
         {locations.map((l) => (
-          <div key={l._id} className="flex items-center justify-between rounded-xl border border-orange-100 bg-white px-4 py-3 text-sm shadow-sm">
+          <StaggerItem
+            key={l._id}
+            className="flex items-center justify-between rounded-xl border border-orange-100 bg-white/80 px-4 py-3 text-sm shadow-sm backdrop-blur-sm"
+          >
             <span>{l.city}, {l.country}</span>
             <span className="text-xs text-ink/40">
               {l.lat != null ? `${l.lat}, ${l.lng}` : 'no coordinates'}
             </span>
-          </div>
+          </StaggerItem>
         ))}
-      </div>
+      </StaggerGroup>
     </div>
   )
 }
