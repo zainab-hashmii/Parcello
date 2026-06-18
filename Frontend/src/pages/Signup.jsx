@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { signUp, getUserByEmail } from '../api/endpoints'
 import { useAuth } from '../context/AuthContext'
@@ -15,16 +15,48 @@ export default function Signup() {
   })
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [emailTaken, setEmailTaken] = useState(false)
+  const [checkingEmail, setCheckingEmail] = useState(false)
   const { login } = useAuth()
   const navigate = useNavigate()
+  const emailCheckTimer = useRef(null)
 
   function update(field, value) {
     setForm((f) => ({ ...f, [field]: value }))
+    if (field === 'email') {
+      setEmailTaken(false)
+      clearTimeout(emailCheckTimer.current)
+      const value_ = value.trim()
+      if (!value_ || !value_.includes('@')) return
+      emailCheckTimer.current = setTimeout(async () => {
+        setCheckingEmail(true)
+        try {
+          await getUserByEmail(value_)
+          setEmailTaken(true)
+        } catch {
+          setEmailTaken(false)
+        } finally {
+          setCheckingEmail(false)
+        }
+      }, 500)
+    }
+  }
+
+  function extractErrorMessage(err) {
+    const data = err.response?.data
+    if (typeof data === 'string') return data
+    return data?.error || data?.message || 'Sign up failed.'
   }
 
   async function handleSubmit(e) {
     e.preventDefault()
     setError('')
+
+    if (emailTaken) {
+      setError('That email is already registered. Try logging in instead.')
+      return
+    }
+
     setLoading(true)
     try {
       const { name, email, phone, password, accountType, address } = form
@@ -33,11 +65,13 @@ export default function Signup() {
       login(createdUser)
       navigate(accountType === 'Rider' ? '/rider' : '/customer')
     } catch (err) {
-      setError(err.response?.data?.message || err.response?.data || 'Sign up failed.')
+      setError(extractErrorMessage(err))
     } finally {
       setLoading(false)
     }
   }
+
+  useEffect(() => () => clearTimeout(emailCheckTimer.current), [])
 
   return (
     <div className="flex min-h-[calc(100vh-72px)] items-center justify-center bg-brand-light px-4 py-12">
@@ -53,14 +87,24 @@ export default function Signup() {
             onChange={(e) => update('name', e.target.value)}
             className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none focus:border-brand"
           />
-          <input
-            type="email"
-            required
-            placeholder="Your email"
-            value={form.email}
-            onChange={(e) => update('email', e.target.value)}
-            className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none focus:border-brand"
-          />
+          <div>
+            <input
+              type="email"
+              required
+              placeholder="Your email"
+              value={form.email}
+              onChange={(e) => update('email', e.target.value)}
+              className={`w-full rounded-xl border bg-gray-50 px-4 py-3 text-sm outline-none focus:border-brand ${
+                emailTaken ? 'border-red-400' : 'border-gray-200'
+              }`}
+            />
+            {checkingEmail && <p className="mt-1 text-xs text-ink/40">Checking email...</p>}
+            {!checkingEmail && emailTaken && (
+              <p className="mt-1 text-xs text-red-500">
+                This email is already registered. <Link to="/login" className="font-semibold underline">Log in</Link> instead.
+              </p>
+            )}
+          </div>
           <input
             required
             placeholder="Your phone number"
@@ -111,7 +155,7 @@ export default function Signup() {
 
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || checkingEmail || emailTaken}
             className="w-full rounded-xl bg-brand py-3 font-semibold text-white shadow-md hover:bg-brand-dark disabled:opacity-60"
           >
             {loading ? 'Creating account...' : 'CREATE AN ACCOUNT'}
