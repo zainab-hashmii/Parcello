@@ -57,8 +57,8 @@ export default function TrackingMap({ origin, destination, current }) {
   return (
     <MapContainer center={center} zoom={points.length ? 6 : 5} className="h-full w-full">
       <TileLayer
-        attribution='&copy; OpenStreetMap contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        attribution='&copy; OpenStreetMap contributors &copy; CARTO'
+        url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
       />
       <FitToMarkers points={points} />
       {originPos && (

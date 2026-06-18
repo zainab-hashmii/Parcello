@@ -15,7 +15,7 @@ function parseResult(r) {
 
 export async function searchAddress(query) {
   if (!query || query.trim().length < 3) return []
-  const url = `${BASE_URL}/search?format=jsonv2&addressdetails=1&limit=5&q=${encodeURIComponent(query)}`
+  const url = `${BASE_URL}/search?format=jsonv2&addressdetails=1&limit=5&accept-language=en&q=${encodeURIComponent(query)}`
   const res = await fetch(url, { headers: { Accept: 'application/json' } })
   if (!res.ok) throw new Error('Address search failed')
   const data = await res.json()
@@ -23,7 +23,7 @@ export async function searchAddress(query) {
 }
 
 export async function reverseGeocode(lat, lng) {
-  const url = `${BASE_URL}/reverse?format=jsonv2&addressdetails=1&lat=${lat}&lon=${lng}`
+  const url = `${BASE_URL}/reverse?format=jsonv2&addressdetails=1&accept-language=en&lat=${lat}&lon=${lng}`
   const res = await fetch(url, { headers: { Accept: 'application/json' } })
   if (!res.ok) throw new Error('Reverse geocoding failed')
   const data = await res.json()

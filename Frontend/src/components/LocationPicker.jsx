@@ -108,8 +108,8 @@ export default function LocationPicker({ kind = 'pickup', value, onChange }) {
       <div className="mt-2 h-48 overflow-hidden rounded-xl border border-gray-200">
         <MapContainer center={center} zoom={value?.lat != null ? 13 : 5} className="h-full w-full">
           <TileLayer
-            attribution="&copy; OpenStreetMap contributors"
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            attribution="&copy; OpenStreetMap contributors &copy; CARTO"
+            url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
           />
           <ClickToPlace onPick={handleMapPick} />
           {value?.lat != null && (
