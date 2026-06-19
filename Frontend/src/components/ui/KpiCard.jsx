@@ -40,11 +40,11 @@ export default function KpiCard({ icon, label, value, prefix = '', suffix = '', 
           className="pointer-events-none absolute -right-6 -top-6 h-24 w-24 rounded-full opacity-20 blur-2xl"
           style={{ background: 'linear-gradient(135deg, #ff8a00, #ffa733)' }}
         />
-        <div className="flex items-center gap-2 text-ink/50 dark:text-white/50">
+        <div className="flex items-center gap-2 text-ink/50">
           <span className="text-base">{icon}</span>
           <p className="text-xs font-semibold uppercase tracking-wide">{label}</p>
         </div>
-        <p className="mt-2 text-2xl font-bold text-ink dark:text-white">
+        <p className="mt-2 text-2xl font-bold text-ink">
           {prefix}{display}{suffix}
         </p>
       </GlassCard>

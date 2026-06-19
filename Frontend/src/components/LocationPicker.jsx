@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet'
+import { MapContainer, TileLayer, Marker, useMap, useMapEvents } from 'react-leaflet'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import { searchAddress, reverseGeocode } from '../api/geocode'
@@ -27,6 +27,16 @@ function ClickToPlace({ onPick }) {
   return null
 }
 
+function FlyToSelection({ lat, lng, zoom, flySeq }) {
+  const map = useMap()
+  useEffect(() => {
+    if (lat == null || lng == null || flySeq === 0) return
+    map.flyTo([lat, lng], zoom, { duration: 1.1 })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [flySeq])
+  return null
+}
+
 const DEFAULT_CENTER = [30.3753, 69.3451] // Pakistan
 
 export default function LocationPicker({ kind = 'pickup', value, onChange }) {
@@ -34,6 +44,7 @@ export default function LocationPicker({ kind = 'pickup', value, onChange }) {
   const [suggestions, setSuggestions] = useState([])
   const [searching, setSearching] = useState(false)
   const [showSuggestions, setShowSuggestions] = useState(false)
+  const [flySeq, setFlySeq] = useState(0)
   const debounceRef = useRef(null)
 
   useEffect(() => {
@@ -62,13 +73,14 @@ export default function LocationPicker({ kind = 'pickup', value, onChange }) {
     setQuery(result.label)
     setSuggestions([])
     setShowSuggestions(false)
+    setFlySeq((n) => n + 1)
   }
 
   async function handleMapPick(lat, lng) {
     onChange({ lat, lng, label: 'Locating address...', city: '', country: '' })
     try {
       const result = await reverseGeocode(lat, lng)
-      onChange(result)
+      onChange({ ...result, zoom: undefined })
       setQuery(result.label)
     } catch {
       onChange({ lat, lng, label: `${lat.toFixed(5)}, ${lng.toFixed(5)}`, city: '', country: '' })
@@ -76,6 +88,7 @@ export default function LocationPicker({ kind = 'pickup', value, onChange }) {
   }
 
   const center = value?.lat != null ? [value.lat, value.lng] : DEFAULT_CENTER
+  const flyZoom = value?.zoom ?? 15
 
   return (
     <div>
@@ -106,12 +119,13 @@ export default function LocationPicker({ kind = 'pickup', value, onChange }) {
       </div>
 
       <div className="mt-2 h-48 overflow-hidden rounded-xl border border-gray-200">
-        <MapContainer center={center} zoom={value?.lat != null ? 13 : 5} className="h-full w-full">
+        <MapContainer center={center} zoom={value?.lat != null ? flyZoom : 5} className="h-full w-full">
           <TileLayer
             attribution="&copy; OpenStreetMap contributors &copy; CARTO"
             url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
           />
           <ClickToPlace onPick={handleMapPick} />
+          <FlyToSelection lat={value?.lat} lng={value?.lng} zoom={flyZoom} flySeq={flySeq} />
           {value?.lat != null && (
             <Marker
               position={[value.lat, value.lng]}

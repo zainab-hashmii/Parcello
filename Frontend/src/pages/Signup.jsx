@@ -113,8 +113,8 @@ export default function Signup() {
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
           className="w-full max-w-sm"
         >
-          <h1 className="text-2xl font-bold text-ink dark:text-white">Create your account</h1>
-          <p className="mt-1 text-sm text-ink/60 dark:text-white/50">Step {step + 1} of {STEPS.length} — {STEPS[step]}</p>
+          <h1 className="text-2xl font-bold text-ink">Create your account</h1>
+          <p className="mt-1 text-sm text-ink/60">Step {step + 1} of {STEPS.length} — {STEPS[step]}</p>
 
           <div className="mt-5 flex items-center gap-2">
             {STEPS.map((s, i) => (
@@ -125,13 +125,13 @@ export default function Signup() {
                       ? 'bg-brand text-white'
                       : i === step
                       ? 'bg-linear-to-br from-brand to-brand-light-tone text-white shadow-[0_0_12px_rgba(255,138,0,0.5)]'
-                      : 'bg-gray-100 text-gray-400 dark:bg-white/10 dark:text-white/30'
+                      : 'bg-gray-100 text-gray-400'
                   }`}
                 >
                   {i < step ? <Check size={13} /> : i + 1}
                 </div>
                 {i < STEPS.length - 1 && (
-                  <div className={`h-0.5 flex-1 rounded-full ${i < step ? 'bg-brand' : 'bg-gray-200 dark:bg-white/10'}`} />
+                  <div className={`h-0.5 flex-1 rounded-full ${i < step ? 'bg-brand' : 'bg-gray-200'}`} />
                 )}
               </div>
             ))}
@@ -151,7 +151,7 @@ export default function Signup() {
                       error={emailTaken}
                       onChange={(e) => update('email', e.target.value)}
                     />
-                    {checkingEmail && <p className="mt-1 text-xs text-ink/40 dark:text-white/30">Checking email...</p>}
+                    {checkingEmail && <p className="mt-1 text-xs text-ink/40">Checking email...</p>}
                     {!checkingEmail && emailTaken && (
                       <p className="mt-1 text-xs text-red-500">
                         This email is already registered. <Link to="/login" className="font-semibold underline">Log in</Link> instead.
@@ -184,8 +184,8 @@ export default function Signup() {
                       onClick={() => update('accountType', type)}
                       className={`flex flex-col items-center gap-2 rounded-2xl border px-4 py-6 text-sm font-medium transition ${
                         form.accountType === type
-                          ? 'border-brand bg-brand-light text-brand shadow-[0_8px_20px_-8px_rgba(255,138,0,0.4)] dark:bg-brand/10'
-                          : 'border-gray-200 text-ink/60 dark:border-white/10 dark:text-white/50'
+                          ? 'border-brand bg-brand-light text-brand shadow-[0_8px_20px_-8px_rgba(255,138,0,0.4)]'
+                          : 'border-gray-200 text-ink/60'
                       }`}
                     >
                       <Icon size={22} />
@@ -197,14 +197,14 @@ export default function Signup() {
 
               {step === 3 && (
                 <motion.div key="step3" custom={1} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ duration: 0.25 }} className="space-y-3">
-                  <div className="rounded-2xl border border-orange-100 bg-orange-50/60 p-4 text-sm dark:border-white/10 dark:bg-white/5">
+                  <div className="rounded-2xl border border-orange-100 bg-orange-50/60 p-4 text-sm">
                     <Row label="Name" value={form.name} />
                     <Row label="Email" value={form.email} />
                     <Row label="Phone" value={form.phone} />
                     <Row label="Address" value={form.address} />
                     <Row label="Account type" value={form.accountType === 'Customer' ? 'Ship parcels' : 'Deliver parcels'} last />
                   </div>
-                  <p className="text-xs text-ink/40 dark:text-white/30">Review your details, then create your account.</p>
+                  <p className="text-xs text-ink/40">Review your details, then create your account.</p>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -222,7 +222,7 @@ export default function Signup() {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={back}
-                  className="flex items-center gap-1 rounded-xl border border-gray-200 px-4 py-3 text-sm font-semibold text-ink/70 dark:border-white/10 dark:text-white/60"
+                  className="flex items-center gap-1 rounded-xl border border-gray-200 px-4 py-3 text-sm font-semibold text-ink/70"
                 >
                   <ArrowLeft size={15} /> Back
                 </motion.button>
@@ -252,7 +252,7 @@ export default function Signup() {
             </div>
           </form>
 
-          <p className="mt-6 text-center text-sm text-ink/60 dark:text-white/40">
+          <p className="mt-6 text-center text-sm text-ink/60">
             Already have an account?{' '}
             <Link to="/login" className="font-semibold text-brand">
               Login
@@ -266,9 +266,9 @@ export default function Signup() {
 
 function Row({ label, value, last = false }) {
   return (
-    <div className={`flex items-center justify-between py-1.5 ${last ? '' : 'border-b border-orange-100/60 dark:border-white/10'}`}>
-      <span className="text-ink/50 dark:text-white/40">{label}</span>
-      <span className="font-medium text-ink dark:text-white">{value || '—'}</span>
+    <div className={`flex items-center justify-between py-1.5 ${last ? '' : 'border-b border-orange-100/60'}`}>
+      <span className="text-ink/50">{label}</span>
+      <span className="font-medium text-ink">{value || '—'}</span>
     </div>
   )
 }

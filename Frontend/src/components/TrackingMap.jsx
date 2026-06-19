@@ -2,7 +2,6 @@ import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap } from 'react-
 import { useEffect, useRef, useState } from 'react'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
-import { useTheme } from '../context/ThemeContext'
 
 function toLatLng(loc) {
   if (!loc || loc.lat == null || loc.lng == null) return null
@@ -88,7 +87,6 @@ function AnimatedRoute({ originPos, destinationPos, progress }) {
 }
 
 export default function TrackingMap({ origin, destination, current, progress = 0.5 }) {
-  const { theme } = useTheme?.() || { theme: 'light' }
   const originPos = toLatLng(origin)
   const destinationPos = toLatLng(destination)
   const currentPos = toLatLng(current) || originPos
@@ -97,14 +95,12 @@ export default function TrackingMap({ origin, destination, current, progress = 0
   const points = [originPos, destinationPos, currentPos].filter(Boolean)
   const center = points[0] || fallbackCenter
 
-  const tileUrl =
-    theme === 'dark'
-      ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
-      : 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png'
-
   return (
     <MapContainer center={center} zoom={points.length ? 6 : 5} className="h-full w-full">
-      <TileLayer attribution='&copy; OpenStreetMap contributors &copy; CARTO' url={tileUrl} />
+      <TileLayer
+        attribution='&copy; OpenStreetMap contributors &copy; CARTO'
+        url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+      />
       <FitToMarkers points={points} />
       {originPos && (
         <Marker position={originPos} icon={pickupIcon}>

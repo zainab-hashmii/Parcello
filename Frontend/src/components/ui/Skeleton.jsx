@@ -1,14 +1,14 @@
 export function Skeleton({ className = '' }) {
   return (
     <div
-      className={`animate-pulse rounded-xl bg-linear-to-r from-orange-100/60 via-orange-50/40 to-orange-100/60 dark:from-white/10 dark:via-white/5 dark:to-white/10 ${className}`}
+      className={`animate-pulse rounded-xl bg-linear-to-r from-orange-100/60 via-orange-50/40 to-orange-100/60 ${className}`}
     />
   )
 }
 
 export function ShipmentCardSkeleton() {
   return (
-    <div className="rounded-[1.5rem] border border-orange-100/70 bg-white/80 p-5 shadow-sm backdrop-blur-md dark:border-white/10 dark:bg-white/5">
+    <div className="rounded-[1.5rem] border border-orange-100/70 bg-white/80 p-5 shadow-sm backdrop-blur-md">
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-4">
           <Skeleton className="h-12 w-12 rounded-2xl" />
@@ -26,7 +26,7 @@ export function ShipmentCardSkeleton() {
 
 export function KpiCardSkeleton() {
   return (
-    <div className="rounded-[1.5rem] border border-orange-100/70 bg-white/80 p-5 shadow-sm backdrop-blur-md dark:border-white/10 dark:bg-white/5">
+    <div className="rounded-[1.5rem] border border-orange-100/70 bg-white/80 p-5 shadow-sm backdrop-blur-md">
       <Skeleton className="h-3 w-20" />
       <Skeleton className="mt-3 h-7 w-16" />
     </div>

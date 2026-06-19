@@ -21,13 +21,13 @@ const STATUS_LABEL = {
 }
 
 const STATUS_BADGE = {
-  WAITING: 'bg-gray-100 text-gray-600 dark:bg-white/10 dark:text-white/60',
-  PICKED_UP: 'bg-blue-100 text-blue-600 dark:bg-blue-500/15 dark:text-blue-300',
-  IN_TRANSIT: 'bg-orange-100 text-orange-600 dark:bg-orange-500/15 dark:text-orange-300',
-  AT_WAREHOUSE: 'bg-purple-100 text-purple-600 dark:bg-purple-500/15 dark:text-purple-300',
-  OUT_FOR_DELIVERY: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-500/15 dark:text-yellow-300',
-  DELIVERED: 'bg-green-100 text-green-700 dark:bg-green-500/15 dark:text-green-300',
-  FAILED_DELIVERY: 'bg-red-100 text-red-600 dark:bg-red-500/15 dark:text-red-300',
+  WAITING: 'bg-gray-100 text-gray-600',
+  PICKED_UP: 'bg-blue-100 text-blue-600',
+  IN_TRANSIT: 'bg-orange-100 text-orange-600',
+  AT_WAREHOUSE: 'bg-purple-100 text-purple-600',
+  OUT_FOR_DELIVERY: 'bg-yellow-100 text-yellow-700',
+  DELIVERED: 'bg-green-100 text-green-700',
+  FAILED_DELIVERY: 'bg-red-100 text-red-600',
 }
 
 const STATUS_PROGRESS = {
@@ -132,8 +132,8 @@ export default function CustomerDashboard() {
         className="flex flex-wrap items-center justify-between gap-4"
       >
         <div>
-          <p className="text-sm text-ink/60 dark:text-white/50">Hello, {user.name?.split(' ')[0] || 'there'} 👋</p>
-          <h1 className="text-3xl font-bold tracking-tight text-ink dark:text-white">Welcome back.</h1>
+          <p className="text-sm text-ink/60">Hello, {user.name?.split(' ')[0] || 'there'} 👋</p>
+          <h1 className="text-3xl font-bold tracking-tight text-ink">Welcome back.</h1>
         </div>
         <motion.div whileHover={{ scale: 1.03, y: -1 }} whileTap={{ scale: 0.97 }}>
           <Link
@@ -161,16 +161,16 @@ export default function CustomerDashboard() {
       <div className="mt-10 grid gap-6 lg:grid-cols-[1.6fr_1fr]">
         <div>
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-ink dark:text-white">Your shipments</h2>
+            <h2 className="text-lg font-semibold text-ink">Your shipments</h2>
           </div>
 
           <div className="relative mt-3">
-            <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-ink/30 dark:text-white/30" />
+            <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-ink/30" />
             <input
               placeholder="Search by tracking ID or type..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full rounded-2xl border border-gray-200 bg-white/80 px-4 py-3 pl-11 text-sm shadow-sm backdrop-blur-sm transition focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20 dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder:text-white/30"
+              className="w-full rounded-2xl border border-gray-200 bg-white/80 px-4 py-3 pl-11 text-sm shadow-sm backdrop-blur-sm transition focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20"
             />
           </div>
 
@@ -187,8 +187,8 @@ export default function CustomerDashboard() {
                 >
                   🚚📦
                 </motion.div>
-                <p className="mt-4 font-semibold text-ink dark:text-white">No shipments yet</p>
-                <p className="mt-1 text-sm text-ink/50 dark:text-white/40">
+                <p className="mt-4 font-semibold text-ink">No shipments yet</p>
+                <p className="mt-1 text-sm text-ink/50">
                   Create your first parcel delivery to see it tracked here.
                 </p>
                 <Link
@@ -206,17 +206,17 @@ export default function CustomerDashboard() {
                   <GlassCard className="p-5 transition hover:border-brand/40 hover:shadow-[0_14px_36px_-10px_rgba(255,138,0,0.25)]">
                     <div className="flex flex-wrap items-start justify-between gap-3">
                       <div className="flex items-center gap-4">
-                        <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-orange-50 text-2xl dark:bg-white/10">
+                        <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-orange-50 text-2xl">
                           📦
                         </span>
                         <div>
-                          <p className="font-semibold text-ink dark:text-white">
+                          <p className="font-semibold text-ink">
                             {p.type || 'Parcel'} · {p.weight}kg
                           </p>
-                          <p className="flex items-center gap-1 text-xs text-ink/50 dark:text-white/40">
+                          <p className="flex items-center gap-1 text-xs text-ink/50">
                             <MapPin size={11} /> {p.origin?.city || '—'} → {p.destination?.city || '—'}
                           </p>
-                          <p className="mt-0.5 font-mono text-[10px] uppercase tracking-wide text-ink/30 dark:text-white/30">
+                          <p className="mt-0.5 font-mono text-[10px] uppercase tracking-wide text-ink/30">
                             #{(p._id || '').slice(-8)}
                           </p>
                         </div>
@@ -230,13 +230,13 @@ export default function CustomerDashboard() {
                       <ProgressJourney status={p.status} compact />
                     </div>
 
-                    <div className="mt-4 flex items-center justify-between text-xs text-ink/50 dark:text-white/40">
+                    <div className="mt-4 flex items-center justify-between text-xs text-ink/50">
                       <div className="flex items-center gap-1">
                         <Truck size={12} /> ETA {estimateEta(p.status)}
                       </div>
                       <span>{STATUS_PROGRESS[p.status] ?? 0}% complete</span>
                     </div>
-                    <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-orange-50 dark:bg-white/10">
+                    <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-orange-50">
                       <motion.div
                         className="h-full rounded-full bg-linear-to-r from-brand to-brand-light-tone"
                         initial={{ width: 0 }}
@@ -252,11 +252,11 @@ export default function CustomerDashboard() {
         </div>
 
         <div>
-          <h2 className="text-lg font-semibold text-ink dark:text-white">Activity feed</h2>
+          <h2 className="text-lg font-semibold text-ink">Activity feed</h2>
           <GlassCard className="mt-3 p-5">
-            {loading && <p className="text-sm text-ink/40 dark:text-white/30">Loading activity...</p>}
+            {loading && <p className="text-sm text-ink/40">Loading activity...</p>}
             {!loading && activity.length === 0 && (
-              <p className="text-sm text-ink/40 dark:text-white/30">No recent activity yet.</p>
+              <p className="text-sm text-ink/40">No recent activity yet.</p>
             )}
             <ol className="space-y-4">
               {activity.map((a, i) => (
@@ -277,8 +277,8 @@ export default function CustomerDashboard() {
                     )}
                   </span>
                   <div>
-                    <p className="text-sm text-ink dark:text-white/80">{a.text}</p>
-                    <p className="text-xs text-ink/40 dark:text-white/30">
+                    <p className="text-sm text-ink">{a.text}</p>
+                    <p className="text-xs text-ink/40">
                       {a.time.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })} ·{' '}
                       {a.time.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })}
                     </p>

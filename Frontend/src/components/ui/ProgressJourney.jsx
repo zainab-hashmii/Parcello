@@ -44,19 +44,19 @@ export default function ProgressJourney({ status, compact = false }) {
                     ? 'bg-linear-to-br from-brand to-brand-light-tone text-white shadow-[0_0_18px_rgba(255,138,0,0.55)]'
                     : done
                     ? 'bg-brand/15 text-brand'
-                    : 'bg-gray-100 text-gray-400 dark:bg-white/10 dark:text-white/30'
+                    : 'bg-gray-100 text-gray-400'
                 }`}
               >
                 {step.icon}
               </span>
               {!compact && (
-                <span className={`mt-1 text-[10px] font-medium ${active ? 'text-brand' : 'text-ink/40 dark:text-white/40'}`}>
+                <span className={`mt-1 text-[10px] font-medium ${active ? 'text-brand' : 'text-ink/40'}`}>
                   {step.label}
                 </span>
               )}
             </div>
             {i < JOURNEY.length - 1 && (
-              <div className={`mx-1 h-0.5 ${compact ? 'w-4' : 'w-8'} rounded-full ${i < activeIndex ? 'bg-brand' : 'bg-gray-200 dark:bg-white/10'}`} />
+              <div className={`mx-1 h-0.5 ${compact ? 'w-4' : 'w-8'} rounded-full ${i < activeIndex ? 'bg-brand' : 'bg-gray-200'}`} />
             )}
           </div>
         )

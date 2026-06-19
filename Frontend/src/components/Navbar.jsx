@@ -5,7 +5,6 @@ import { Bell, ChevronDown, LogOut, LayoutDashboard } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { getParcelsOfCustomer } from '../api/endpoints'
 import Logo from './Logo'
-import ThemeToggle from './ui/ThemeToggle'
 
 export default function Navbar() {
   const { user, logout } = useAuth()
@@ -40,14 +39,14 @@ export default function Navbar() {
       initial={{ y: -24, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-      className="sticky top-0 z-50 border-b border-orange-100/70 bg-white/75 backdrop-blur-xl dark:border-white/10 dark:bg-[#13110f]/75"
+      className="sticky top-0 z-50 border-b border-orange-100/70 bg-white/75 backdrop-blur-xl"
     >
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
         <Logo />
         <div className="flex items-center gap-3">
           {user ? (
             <>
-              <Link to={dashboardPath} className="relative px-1 py-2 text-sm font-medium text-ink transition hover:text-brand dark:text-white/80">
+              <Link to={dashboardPath} className="relative px-1 py-2 text-sm font-medium text-ink transition hover:text-brand">
                 Dashboard
                 {isActive(dashboardPath) && (
                   <motion.span
@@ -60,7 +59,7 @@ export default function Navbar() {
               {user.accountType === 'Customer' && shipmentCount > 0 && (
                 <Link
                   to="/customer"
-                  className="hidden items-center gap-1 rounded-full bg-orange-50 px-3 py-1.5 text-xs font-semibold text-brand dark:bg-white/10 dark:text-orange-200 sm:flex"
+                  className="hidden items-center gap-1 rounded-full bg-orange-50 px-3 py-1.5 text-xs font-semibold text-brand sm:flex"
                 >
                   📦 {shipmentCount} active
                 </Link>
@@ -69,27 +68,25 @@ export default function Navbar() {
               <button
                 type="button"
                 aria-label="Notifications"
-                className="relative flex h-9 w-9 items-center justify-center rounded-full text-ink/60 transition hover:bg-orange-50 hover:text-brand dark:text-white/60 dark:hover:bg-white/10"
+                className="relative flex h-9 w-9 items-center justify-center rounded-full text-ink/60 transition hover:bg-orange-50 hover:text-brand"
               >
                 <Bell size={17} />
                 {shipmentCount > 0 && (
-                  <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-brand ring-2 ring-white dark:ring-[#13110f]" />
+                  <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-brand ring-2 ring-white" />
                 )}
               </button>
-
-              <ThemeToggle />
 
               <div className="relative" ref={menuRef}>
                 <motion.button
                   whileHover={{ scale: 1.03 }}
                   whileTap={{ scale: 0.97 }}
                   onClick={() => setMenuOpen((o) => !o)}
-                  className="flex items-center gap-2 rounded-full border border-orange-100 bg-white/80 py-1 pl-1 pr-2 shadow-sm dark:border-white/10 dark:bg-white/5"
+                  className="flex items-center gap-2 rounded-full border border-orange-100 bg-white/80 py-1 pl-1 pr-2 shadow-sm"
                 >
                   <span className="flex h-7 w-7 items-center justify-center rounded-full bg-linear-to-br from-brand to-brand-light-tone text-xs font-bold text-white">
                     {initials}
                   </span>
-                  <ChevronDown size={14} className="text-ink/50 dark:text-white/50" />
+                  <ChevronDown size={14} className="text-ink/50" />
                 </motion.button>
 
                 <AnimatePresence>
@@ -99,17 +96,17 @@ export default function Navbar() {
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: -8, scale: 0.97 }}
                       transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
-                      className="absolute right-0 mt-2 w-52 overflow-hidden rounded-2xl border border-orange-100 bg-white/95 p-2 shadow-xl backdrop-blur-xl dark:border-white/10 dark:bg-[#1a1816]/95"
+                      className="absolute right-0 mt-2 w-52 overflow-hidden rounded-2xl border border-orange-100 bg-white/95 p-2 shadow-xl backdrop-blur-xl"
                     >
                       <div className="px-3 py-2">
-                        <p className="text-sm font-semibold text-ink dark:text-white">{user.name}</p>
-                        <p className="truncate text-xs text-ink/50 dark:text-white/40">{user.email}</p>
+                        <p className="text-sm font-semibold text-ink">{user.name}</p>
+                        <p className="truncate text-xs text-ink/50">{user.email}</p>
                       </div>
-                      <div className="my-1 h-px bg-orange-100 dark:bg-white/10" />
+                      <div className="my-1 h-px bg-orange-100" />
                       <Link
                         to={dashboardPath}
                         onClick={() => setMenuOpen(false)}
-                        className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm text-ink transition hover:bg-orange-50 dark:text-white/80 dark:hover:bg-white/10"
+                        className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm text-ink transition hover:bg-orange-50"
                       >
                         <LayoutDashboard size={15} /> Dashboard
                       </Link>
@@ -119,7 +116,7 @@ export default function Navbar() {
                           logout()
                           navigate('/')
                         }}
-                        className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-sm text-red-500 transition hover:bg-red-50 dark:hover:bg-red-500/10"
+                        className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-sm text-red-500 transition hover:bg-red-50"
                       >
                         <LogOut size={15} /> Log out
                       </button>
@@ -130,8 +127,7 @@ export default function Navbar() {
             </>
           ) : (
             <>
-              <ThemeToggle />
-              <Link to="/login" className="text-sm font-medium text-ink transition hover:text-brand dark:text-white/80">
+              <Link to="/login" className="text-sm font-medium text-ink transition hover:text-brand">
                 Login
               </Link>
               <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}>

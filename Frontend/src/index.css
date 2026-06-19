@@ -1,8 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 @import "tailwindcss";
 
-@custom-variant dark (&:where(.dark, .dark *));
-
 @theme {
   --color-brand: #ff8a00;
   --color-brand-light-tone: #ffa733;
@@ -14,7 +12,6 @@
   --color-cream-soft: #fff8ef;
 
   --color-surface: #ffffff;
-  --color-surface-dark: #161514;
 
   --shadow-soft: 0 8px 30px -8px rgba(31, 36, 48, 0.10);
   --shadow-lift: 0 18px 45px -12px rgba(255, 138, 0, 0.28);
@@ -36,22 +33,12 @@ body {
   font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
   background-color: #fdfbf7;
   color: var(--color-ink);
-  transition: background-color 0.35s ease, color 0.35s ease;
-}
-
-.dark body {
-  background-color: #100f0e;
-  color: #f4f1ec;
 }
 
 .leaflet-container {
   width: 100%;
   height: 100%;
   border-radius: 1rem;
-}
-
-.dark .leaflet-tile-pane {
-  filter: brightness(0.85) contrast(1.05) saturate(0.9);
 }
 
 @keyframes dash-flow {
