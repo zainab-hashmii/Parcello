@@ -26,6 +26,7 @@ export default function Signup() {
   const [loading, setLoading] = useState(false)
   const [emailTaken, setEmailTaken] = useState(false)
   const [checkingEmail, setCheckingEmail] = useState(false)
+  const [confirmed, setConfirmed] = useState(false)
   const { login } = useAuth()
   const navigate = useNavigate()
   const emailCheckTimer = useRef(null)
@@ -70,6 +71,7 @@ export default function Signup() {
   }
   function back() {
     setError('')
+    setConfirmed(false)
     setStep((s) => Math.max(s - 1, 0))
   }
 
@@ -79,6 +81,10 @@ export default function Signup() {
 
     if (emailTaken) {
       setError('That email is already registered. Try logging in instead.')
+      return
+    }
+    if (!confirmed) {
+      setError('Please confirm your details are correct before creating your account.')
       return
     }
 
@@ -206,7 +212,17 @@ export default function Signup() {
                     <Row label="Address" value={form.address} />
                     <Row label="Account type" value={form.accountType === 'Customer' ? 'Ship parcels' : 'Deliver parcels'} last />
                   </div>
-                  <p className="text-xs text-ink/40">Review your details, then create your account.</p>
+                  <p className="text-xs text-ink/40">Review your details carefully — you can go back to edit them.</p>
+
+                  <label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-gray-200 px-4 py-3 transition hover:border-brand/40">
+                    <input
+                      type="checkbox"
+                      checked={confirmed}
+                      onChange={(e) => setConfirmed(e.target.checked)}
+                      className="mt-0.5 h-4 w-4 shrink-0 accent-brand"
+                    />
+                    <span className="text-sm text-ink/70">I confirm the details above are correct.</span>
+                  </label>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -245,8 +261,8 @@ export default function Signup() {
                   type="submit"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  disabled={loading}
-                  className="flex-1 rounded-xl bg-linear-to-r from-brand to-brand-light-tone py-3 font-semibold text-white shadow-[0_10px_24px_-8px_rgba(255,138,0,0.55)] disabled:opacity-60"
+                  disabled={loading || !confirmed}
+                  className="flex-1 rounded-xl bg-linear-to-r from-brand to-brand-light-tone py-3 font-semibold text-white shadow-[0_10px_24px_-8px_rgba(255,138,0,0.55)] disabled:opacity-50"
                 >
                   {loading ? 'Creating account...' : 'Create account'}
                 </motion.button>
