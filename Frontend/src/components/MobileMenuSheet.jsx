@@ -2,8 +2,15 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { X } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import Logo from './Logo'
+import GatedNavLink from './GatedNavLink'
 
-const LINKS = ['Ship', 'Track', 'Pricing', 'Couriers', 'Help']
+const LINKS = [
+  { label: 'Ship', to: '/customer/book', gated: true },
+  { label: 'Track', to: '/customer', gated: true },
+  { label: 'Pricing', to: '/pricing' },
+  { label: 'Couriers', to: '/couriers' },
+  { label: 'Help', to: '/help' },
+]
 
 export default function MobileMenuSheet({ open, onClose }) {
   return (
@@ -40,18 +47,21 @@ export default function MobileMenuSheet({ open, onClose }) {
             <div className="h-px bg-[#192837]/10" />
 
             <nav className="flex flex-col gap-1 px-6 py-6">
-              {LINKS.map((link, i) => (
-                <motion.a
-                  key={link}
-                  href="#"
-                  className="py-3 text-base font-medium text-[#192837]"
-                  initial={{ opacity: 0, x: 16 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.18 + i * 0.07, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                >
-                  {link}
-                </motion.a>
-              ))}
+              {LINKS.map((link, i) => {
+                const LinkComponent = link.gated ? GatedNavLink : Link
+                return (
+                  <motion.div
+                    key={link.label}
+                    initial={{ opacity: 0, x: 16 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.18 + i * 0.07, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                  >
+                    <LinkComponent to={link.to} onClick={onClose} className="block py-3 text-base font-medium text-[#192837]">
+                      {link.label}
+                    </LinkComponent>
+                  </motion.div>
+                )
+              })}
             </nav>
 
             <div className="mt-auto flex flex-col gap-3 px-6 py-8">

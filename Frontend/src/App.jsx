@@ -8,6 +8,9 @@ import ToastContainer from './components/ToastContainer'
 import Home from './pages/Home'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
+import Pricing from './pages/Pricing'
+import Couriers from './pages/Couriers'
+import Help from './pages/Help'
 import CustomerDashboard from './pages/customer/CustomerDashboard'
 import BookParcel from './pages/customer/BookParcel'
 import TrackParcel from './pages/customer/TrackParcel'
@@ -32,6 +35,9 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<PageTransition><Login /></PageTransition>} />
           <Route path="/signup" element={<PageTransition><Signup /></PageTransition>} />
+          <Route path="/pricing" element={<PageTransition><Pricing /></PageTransition>} />
+          <Route path="/couriers" element={<PageTransition><Couriers /></PageTransition>} />
+          <Route path="/help" element={<PageTransition><Help /></PageTransition>} />
 
           <Route
             path="/customer"

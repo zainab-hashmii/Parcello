@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { login as loginApi } from '../api/endpoints'
 import { useAuth } from '../context/AuthContext'
@@ -11,6 +11,7 @@ export default function Login() {
   const [loading, setLoading] = useState(false)
   const { login } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -20,12 +21,14 @@ export default function Login() {
       const { data } = await loginApi(email, password)
       const userData = data.user || data
       login(userData)
-      const dest =
+      const defaultDest =
         userData.accountType === 'Admin'
           ? '/admin'
           : userData.accountType === 'Rider'
           ? '/rider'
           : '/customer'
+      const from = location.state?.from
+      const dest = from && (userData.accountType === 'Customer' ? from.startsWith('/customer') : false) ? from : defaultDest
       navigate(dest)
     } catch (err) {
       const data = err.response?.data

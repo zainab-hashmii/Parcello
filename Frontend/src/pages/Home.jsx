@@ -5,8 +5,15 @@ import { Menu, ArrowRightCircle, Truck } from 'lucide-react'
 import Logo from '../components/Logo'
 import MobileMenuSheet from '../components/MobileMenuSheet'
 import DeliveryRoadScene from '../components/DeliveryRoadScene'
+import GatedNavLink from '../components/GatedNavLink'
 
-const NAV_LINKS = ['Ship', 'Track', 'Pricing', 'Couriers', 'Help']
+const NAV_LINKS = [
+  { label: 'Ship', to: '/customer/book', gated: true },
+  { label: 'Track', to: '/customer', gated: true },
+  { label: 'Pricing', to: '/pricing' },
+  { label: 'Couriers', to: '/couriers' },
+  { label: 'Help', to: '/help' },
+]
 
 const fadeUp = {
   hidden: { opacity: 0, y: 28 },
@@ -32,16 +39,27 @@ export default function Home() {
           <Logo light />
 
           <div className="hidden items-center gap-8 md:flex">
-            {NAV_LINKS.map((link) => (
-              <a
-                key={link}
-                href="#"
-                className="text-sm font-medium text-white opacity-90 hover:opacity-100"
-                style={{ textShadow: '0 1px 6px rgba(0,0,0,0.4)' }}
-              >
-                {link}
-              </a>
-            ))}
+            {NAV_LINKS.map((link) =>
+              link.gated ? (
+                <GatedNavLink
+                  key={link.label}
+                  to={link.to}
+                  className="text-sm font-medium text-white opacity-90 hover:opacity-100"
+                  style={{ textShadow: '0 1px 6px rgba(0,0,0,0.4)' }}
+                >
+                  {link.label}
+                </GatedNavLink>
+              ) : (
+                <Link
+                  key={link.label}
+                  to={link.to}
+                  className="text-sm font-medium text-white opacity-90 hover:opacity-100"
+                  style={{ textShadow: '0 1px 6px rgba(0,0,0,0.4)' }}
+                >
+                  {link.label}
+                </Link>
+              )
+            )}
           </div>
 
           <div className="hidden items-center gap-3 md:flex">

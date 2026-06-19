@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Check, ArrowLeft, ArrowRight, Package, Bike } from 'lucide-react'
 import { signUp, getUserByEmail } from '../api/endpoints'
@@ -10,13 +10,15 @@ import SignupIllustration from '../components/SignupIllustration'
 const STEPS = ['Personal', 'Address', 'Account type', 'Confirm']
 
 export default function Signup() {
+  const [searchParams] = useSearchParams()
+  const initialType = searchParams.get('type') === 'Rider' ? 'Rider' : 'Customer'
   const [step, setStep] = useState(0)
   const [form, setForm] = useState({
     name: '',
     email: '',
     phone: '',
     password: '',
-    accountType: 'Customer',
+    accountType: initialType,
     address: '',
     referralCode: '',
   })
