@@ -1,10 +1,16 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Check, ArrowLeft, ArrowRight, Package, Bike } from 'lucide-react'
 import { signUp, getUserByEmail } from '../api/endpoints'
 import { useAuth } from '../context/AuthContext'
+import FloatingInput from '../components/ui/FloatingInput'
+import SignupIllustration from '../components/SignupIllustration'
+
+const STEPS = ['Personal', 'Address', 'Account type', 'Confirm']
 
 export default function Signup() {
+  const [step, setStep] = useState(0)
   const [form, setForm] = useState({
     name: '',
     email: '',
@@ -49,6 +55,22 @@ export default function Signup() {
     return data?.error || data?.message || 'Sign up failed.'
   }
 
+  function canAdvance() {
+    if (step === 0) return form.name.trim() && form.email.trim() && !emailTaken && !checkingEmail && form.password.length >= 4
+    if (step === 1) return form.phone.trim() && form.address.trim()
+    return true
+  }
+
+  function next() {
+    if (!canAdvance()) return
+    setError('')
+    setStep((s) => Math.min(s + 1, STEPS.length - 1))
+  }
+  function back() {
+    setError('')
+    setStep((s) => Math.max(s - 1, 0))
+  }
+
   async function handleSubmit(e) {
     e.preventDefault()
     setError('')
@@ -74,107 +96,179 @@ export default function Signup() {
 
   useEffect(() => () => clearTimeout(emailCheckTimer.current), [])
 
+  const slideVariants = {
+    enter: (dir) => ({ opacity: 0, x: dir > 0 ? 24 : -24 }),
+    center: { opacity: 1, x: 0 },
+    exit: (dir) => ({ opacity: 0, x: dir > 0 ? -24 : 24 }),
+  }
+
   return (
-    <div className="flex min-h-[calc(100vh-72px)] items-center justify-center px-4 py-12">
-      <motion.div
-        initial={{ opacity: 0, y: 24, scale: 0.98 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-        className="w-full max-w-sm rounded-3xl border border-white/60 bg-white/80 p-8 shadow-xl backdrop-blur-md"
-      >
-        <h1 className="text-2xl font-bold text-ink">Create Your Account</h1>
-        <p className="mt-1 text-sm text-ink/60">Enter details below to create new account.</p>
+    <div className="grid min-h-[calc(100vh-72px)] lg:grid-cols-2">
+      <SignupIllustration />
 
-        <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-          <input
-            required
-            placeholder="Your name"
-            value={form.name}
-            onChange={(e) => update('name', e.target.value)}
-            className="w-full rounded-xl border border-gray-200 bg-white/70 px-4 py-3 text-sm outline-none focus:border-brand"
-          />
-          <div>
-            <input
-              type="email"
-              required
-              placeholder="Your email"
-              value={form.email}
-              onChange={(e) => update('email', e.target.value)}
-              className={`w-full rounded-xl border bg-white/70 px-4 py-3 text-sm outline-none focus:border-brand ${
-                emailTaken ? 'border-red-400' : 'border-gray-200'
-              }`}
-            />
-            {checkingEmail && <p className="mt-1 text-xs text-ink/40">Checking email...</p>}
-            {!checkingEmail && emailTaken && (
-              <p className="mt-1 text-xs text-red-500">
-                This email is already registered. <Link to="/login" className="font-semibold underline">Log in</Link> instead.
-              </p>
-            )}
-          </div>
-          <input
-            required
-            placeholder="Your phone number"
-            value={form.phone}
-            onChange={(e) => update('phone', e.target.value)}
-            className="w-full rounded-xl border border-gray-200 bg-white/70 px-4 py-3 text-sm outline-none focus:border-brand"
-          />
-          <input
-            required
-            placeholder="Your address"
-            value={form.address}
-            onChange={(e) => update('address', e.target.value)}
-            className="w-full rounded-xl border border-gray-200 bg-white/70 px-4 py-3 text-sm outline-none focus:border-brand"
-          />
-          <input
-            type="password"
-            required
-            placeholder="Enter password"
-            value={form.password}
-            onChange={(e) => update('password', e.target.value)}
-            className="w-full rounded-xl border border-gray-200 bg-white/70 px-4 py-3 text-sm outline-none focus:border-brand"
-          />
-          <input
-            placeholder="Enter referral code (optional)"
-            value={form.referralCode}
-            onChange={(e) => update('referralCode', e.target.value)}
-            className="w-full rounded-xl border border-gray-200 bg-white/70 px-4 py-3 text-sm outline-none focus:border-brand"
-          />
+      <div className="flex items-center justify-center px-4 py-12">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          className="w-full max-w-sm"
+        >
+          <h1 className="text-2xl font-bold text-ink dark:text-white">Create your account</h1>
+          <p className="mt-1 text-sm text-ink/60 dark:text-white/50">Step {step + 1} of {STEPS.length} — {STEPS[step]}</p>
 
-          <div className="flex gap-2 text-sm">
-            {['Customer', 'Rider'].map((type) => (
-              <button
-                type="button"
-                key={type}
-                onClick={() => update('accountType', type)}
-                className={`flex-1 rounded-xl border py-2 font-medium ${
-                  form.accountType === type
-                    ? 'border-brand bg-brand-light text-brand'
-                    : 'border-gray-200 text-ink/60'
-                }`}
-              >
-                {type === 'Customer' ? 'I want to ship' : 'I want to deliver'}
-              </button>
+          <div className="mt-5 flex items-center gap-2">
+            {STEPS.map((s, i) => (
+              <div key={s} className="flex flex-1 items-center gap-2">
+                <div
+                  className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-bold transition-all ${
+                    i < step
+                      ? 'bg-brand text-white'
+                      : i === step
+                      ? 'bg-linear-to-br from-brand to-brand-light-tone text-white shadow-[0_0_12px_rgba(255,138,0,0.5)]'
+                      : 'bg-gray-100 text-gray-400 dark:bg-white/10 dark:text-white/30'
+                  }`}
+                >
+                  {i < step ? <Check size={13} /> : i + 1}
+                </div>
+                {i < STEPS.length - 1 && (
+                  <div className={`h-0.5 flex-1 rounded-full ${i < step ? 'bg-brand' : 'bg-gray-200 dark:bg-white/10'}`} />
+                )}
+              </div>
             ))}
           </div>
 
-          {error && <p className="text-sm text-red-500">{String(error)}</p>}
+          <form onSubmit={handleSubmit} className="mt-7">
+            <AnimatePresence mode="wait" custom={1}>
+              {step === 0 && (
+                <motion.div key="step0" custom={1} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ duration: 0.25 }} className="space-y-4">
+                  <FloatingInput label="Your name" required value={form.name} onChange={(e) => update('name', e.target.value)} />
+                  <div>
+                    <FloatingInput
+                      label="Your email"
+                      type="email"
+                      required
+                      value={form.email}
+                      error={emailTaken}
+                      onChange={(e) => update('email', e.target.value)}
+                    />
+                    {checkingEmail && <p className="mt-1 text-xs text-ink/40 dark:text-white/30">Checking email...</p>}
+                    {!checkingEmail && emailTaken && (
+                      <p className="mt-1 text-xs text-red-500">
+                        This email is already registered. <Link to="/login" className="font-semibold underline">Log in</Link> instead.
+                      </p>
+                    )}
+                  </div>
+                  <FloatingInput label="Password" type="password" required value={form.password} onChange={(e) => update('password', e.target.value)} />
+                </motion.div>
+              )}
 
-          <button
-            type="submit"
-            disabled={loading || checkingEmail || emailTaken}
-            className="w-full rounded-xl bg-brand py-3 font-semibold text-white shadow-md hover:bg-brand-dark disabled:opacity-60"
-          >
-            {loading ? 'Creating account...' : 'CREATE AN ACCOUNT'}
-          </button>
-        </form>
+              {step === 1 && (
+                <motion.div key="step1" custom={1} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ duration: 0.25 }} className="space-y-4">
+                  <FloatingInput label="Phone number" required value={form.phone} onChange={(e) => update('phone', e.target.value)} />
+                  <FloatingInput label="Address" required value={form.address} onChange={(e) => update('address', e.target.value)} />
+                  <FloatingInput label="Referral code (optional)" value={form.referralCode} onChange={(e) => update('referralCode', e.target.value)} />
+                </motion.div>
+              )}
 
-        <p className="mt-6 text-center text-sm text-ink/60">
-          Already have an account?{' '}
-          <Link to="/login" className="font-semibold text-brand">
-            Login
-          </Link>
-        </p>
-      </motion.div>
+              {step === 2 && (
+                <motion.div key="step2" custom={1} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ duration: 0.25 }} className="grid grid-cols-2 gap-3">
+                  {[
+                    { type: 'Customer', label: 'I want to ship', icon: Package },
+                    { type: 'Rider', label: 'I want to deliver', icon: Bike },
+                  ].map(({ type, label, icon: Icon }) => (
+                    <motion.button
+                      type="button"
+                      key={type}
+                      whileHover={{ y: -2 }}
+                      whileTap={{ scale: 0.97 }}
+                      onClick={() => update('accountType', type)}
+                      className={`flex flex-col items-center gap-2 rounded-2xl border px-4 py-6 text-sm font-medium transition ${
+                        form.accountType === type
+                          ? 'border-brand bg-brand-light text-brand shadow-[0_8px_20px_-8px_rgba(255,138,0,0.4)] dark:bg-brand/10'
+                          : 'border-gray-200 text-ink/60 dark:border-white/10 dark:text-white/50'
+                      }`}
+                    >
+                      <Icon size={22} />
+                      {label}
+                    </motion.button>
+                  ))}
+                </motion.div>
+              )}
+
+              {step === 3 && (
+                <motion.div key="step3" custom={1} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ duration: 0.25 }} className="space-y-3">
+                  <div className="rounded-2xl border border-orange-100 bg-orange-50/60 p-4 text-sm dark:border-white/10 dark:bg-white/5">
+                    <Row label="Name" value={form.name} />
+                    <Row label="Email" value={form.email} />
+                    <Row label="Phone" value={form.phone} />
+                    <Row label="Address" value={form.address} />
+                    <Row label="Account type" value={form.accountType === 'Customer' ? 'Ship parcels' : 'Deliver parcels'} last />
+                  </div>
+                  <p className="text-xs text-ink/40 dark:text-white/30">Review your details, then create your account.</p>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {error && (
+              <motion.p initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} className="mt-4 text-sm text-red-500">
+                {String(error)}
+              </motion.p>
+            )}
+
+            <div className="mt-7 flex gap-3">
+              {step > 0 && (
+                <motion.button
+                  type="button"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={back}
+                  className="flex items-center gap-1 rounded-xl border border-gray-200 px-4 py-3 text-sm font-semibold text-ink/70 dark:border-white/10 dark:text-white/60"
+                >
+                  <ArrowLeft size={15} /> Back
+                </motion.button>
+              )}
+              {step < STEPS.length - 1 ? (
+                <motion.button
+                  type="button"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={next}
+                  disabled={!canAdvance()}
+                  className="flex flex-1 items-center justify-center gap-1 rounded-xl bg-linear-to-r from-brand to-brand-light-tone py-3 font-semibold text-white shadow-[0_10px_24px_-8px_rgba(255,138,0,0.55)] transition disabled:opacity-50"
+                >
+                  Continue <ArrowRight size={15} />
+                </motion.button>
+              ) : (
+                <motion.button
+                  type="submit"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  disabled={loading}
+                  className="flex-1 rounded-xl bg-linear-to-r from-brand to-brand-light-tone py-3 font-semibold text-white shadow-[0_10px_24px_-8px_rgba(255,138,0,0.55)] disabled:opacity-60"
+                >
+                  {loading ? 'Creating account...' : 'Create account'}
+                </motion.button>
+              )}
+            </div>
+          </form>
+
+          <p className="mt-6 text-center text-sm text-ink/60 dark:text-white/40">
+            Already have an account?{' '}
+            <Link to="/login" className="font-semibold text-brand">
+              Login
+            </Link>
+          </p>
+        </motion.div>
+      </div>
+    </div>
+  )
+}
+
+function Row({ label, value, last = false }) {
+  return (
+    <div className={`flex items-center justify-between py-1.5 ${last ? '' : 'border-b border-orange-100/60 dark:border-white/10'}`}>
+      <span className="text-ink/50 dark:text-white/40">{label}</span>
+      <span className="font-medium text-ink dark:text-white">{value || '—'}</span>
     </div>
   )
 }
