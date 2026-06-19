@@ -4,6 +4,7 @@ import Navbar from './components/Navbar'
 import PageBackground from './components/PageBackground'
 import PageTransition from './components/PageTransition'
 import ProtectedRoute from './components/ProtectedRoute'
+import ToastContainer from './components/ToastContainer'
 import Home from './pages/Home'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
@@ -25,6 +26,7 @@ function App() {
     <>
       {!isHome && <PageBackground />}
       {!isHome && <Navbar />}
+      <ToastContainer />
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
           <Route path="/" element={<Home />} />
